@@ -1,18 +1,14 @@
 package ambilight.gui;
 
+import ambilight.GUIListener;
 import ambilight.Ambilight;
 import ambilight.LedConfig;
-import ambilight.serial.SerialConnection;
-import jssc.SerialPortException;
 
 
 /**
  * Created by David Khol [david@khol.me] on 20. 7. 2017.
  */
-class LoopingRunnable implements Runnable {
-
-	private static final String EMPTY_PORT_NAME = AmbilightFrame.EMPTY_PORT_NAME;
-
+public class LoopingRunnable implements Runnable, GUIListener {
 
 	private static final short MAX_FADE = 256;
 	private static final float Pr = 0.299f;
@@ -21,7 +17,7 @@ class LoopingRunnable implements Runnable {
 
 	private final Ambilight ambilight;
 	private final LedConfig config;
-	private final PreviewPanel previewPanel;
+	private final SegmentColorsUpdateListener listener;
 
 	private long currentTime;
 	private long renderTime;
@@ -33,21 +29,15 @@ class LoopingRunnable implements Runnable {
 	private int cutOff;
 	private int brightness;
 	private boolean isLivePreview;
-	private boolean running;
-
-	private String portName;
-
-	private final SerialConnection connection;
 
 	private byte[][] targetSegmentColors;
 	private byte[][] segmentColors;
 
 
-	public LoopingRunnable(Ambilight ambilight, LedConfig config, PreviewPanel previewPanel, String portName, long renderRate, long updateRate, int smoothness, double saturation, int brightness, int cutOff) {
+	public LoopingRunnable(Ambilight ambilight, LedConfig config, SegmentColorsUpdateListener listener, long renderRate, long updateRate, int smoothness, double saturation, int brightness, int cutOff) {
 		this.ambilight = ambilight;
 		this.config = config;
-		this.previewPanel = previewPanel;
-		this.portName = portName;
+		this.listener = listener;
 		this.renderTime = 1000 / renderRate;
 		this.updateTime = 1000 / updateRate;
 		this.smoothness = smoothness;
@@ -59,27 +49,13 @@ class LoopingRunnable implements Runnable {
 		lastRenderTime = currentTime;
 		lastUpdateTime = currentTime;
 		isLivePreview = true;
-		running = true;
 		segmentColors = new byte[config.getLedCount()][3];
 		targetSegmentColors = segmentColors;
-
-		connection = new SerialConnection(config);
 
 		System.out.println("Created new looping Runnable");
 	}
 
-	public void setPortName(String portName) {
-		if (!this.portName.equals(portName) && !portName.equals(EMPTY_PORT_NAME)) {
-			try {
-				connection.reopen(portName);
-			} catch (SerialPortException e) {
-				System.out.println("Exception port " + e.getPortName() +
-						": " + e.getExceptionType() +
-						" (" + e.getMethodName() + ")");
-			}
-		}
-		this.portName = portName;
-	}
+
 	public void setRenderRate(long renderRate) {
 		this.renderTime = 1000 / renderRate;
 	}
@@ -102,15 +78,8 @@ class LoopingRunnable implements Runnable {
 
 	@Override
 	public void run() {
-		try {
-			connection.open(portName);
-		} catch (SerialPortException e) {
-			System.out.println("Exception port " + e.getPortName() +
-					": " + e.getExceptionType() +
-					" (" + e.getMethodName() + ")");
-		}
-
-		while (running) {
+		//noinspection InfiniteLoopStatement
+		while (true) {
 			if ((currentTime - lastRenderTime) >= renderTime) {
 				if (isLivePreview) {
 					render();
@@ -133,8 +102,6 @@ class LoopingRunnable implements Runnable {
 				currentTime = System.currentTimeMillis();
 			}
 		}
-
-		connection.close();
 	}
 
 	private void render() {
@@ -149,12 +116,10 @@ class LoopingRunnable implements Runnable {
 
 	private void update() {
 		if (smoothness == 0) {
-			previewPanel.setColors(targetSegmentColors);
-			connection.sendColors(targetSegmentColors);
+			listener.updatedSegmentColors(targetSegmentColors);
 		} else {
 			smoothSegmentColors();
-			previewPanel.setColors(segmentColors);
-			connection.sendColors(segmentColors);
+			listener.updatedSegmentColors(segmentColors);
 		}
 	}
 
@@ -223,5 +188,6 @@ class LoopingRunnable implements Runnable {
 		void updatedSegmentColors(byte[][] segmentColors);
 
 	}
+
 }
 

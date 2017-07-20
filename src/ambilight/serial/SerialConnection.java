@@ -1,9 +1,11 @@
 package ambilight.serial;
 
+import org.jetbrains.annotations.NotNull;
+
 import ambilight.LedConfig;
 import jssc.*;
 
-public class SerialConnection implements java.lang.AutoCloseable {
+public class SerialConnection implements Connection, java.lang.AutoCloseable {
 
 	private byte[] serialData;
 
@@ -20,12 +22,8 @@ public class SerialConnection implements java.lang.AutoCloseable {
 		serialData[1] = 'z';
 	}
 
-	public void reopen(String portName) throws SerialPortException {
-		close();
-		open(portName);
-	}
-
-	public void open(String portName) throws SerialPortException {
+	@Override
+	public void open(@NotNull String portName) throws SerialPortException {
 		port = new SerialPort(portName);
 		port.openPort();
 		port.setParams(	SerialPort.BAUDRATE_115200,
@@ -55,7 +53,8 @@ public class SerialConnection implements java.lang.AutoCloseable {
 		System.out.println("Opened port " + portName);
 	}
 
-	public void sendColors(byte[][] segmentColors) {
+	@Override
+	public void sendColors(@NotNull byte[][] segmentColors) {
 
 		if (!arduinoReadyToRead || !port.isOpened()) {
 			return;
@@ -77,22 +76,18 @@ public class SerialConnection implements java.lang.AutoCloseable {
 		}
 	}
 
-	public void close() {
+	@Override
+	public void close() throws SerialPortException {
 		String portName = "";
-		try {
-			if (port != null) {
-				portName = port.getPortName();
-				if (port.isOpened()) {
-					System.out.println("Closing: Port is opened.");
-					port.closePort();
-				}
+		if (port != null) {
+			portName = port.getPortName();
+			if (port.isOpened()) {
+				System.out.println("Closing: Port is opened.");
+				port.closePort();
 			}
-		} catch (SerialPortException e) {
-			e.printStackTrace();
 		}
 
 		System.out.println("Closed port " + portName);
 	}
-
 
 }

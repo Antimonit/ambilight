@@ -1,20 +1,18 @@
 package ambilight.gui;
 
-import ambilight.Ambilight;
-import ambilight.AmbilightGdi;
+import org.jetbrains.annotations.NotNull;
+
+import ambilight.GUIListener;
 import ambilight.LedConfig;
-import ambilight.serial.SerialConnection;
-import jssc.SerialPortException;
+import ambilight.PortListener;
 import jssc.SerialPortList;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.util.Hashtable;
 
-public class AmbilightFrame extends HideableFrame {
+public class ConfigFrame extends HideableFrame implements LoopingRunnable.SegmentColorsUpdateListener {
 
 	public static final String EMPTY_PORT_NAME = "- no port available -";
 
@@ -36,21 +34,22 @@ public class AmbilightFrame extends HideableFrame {
 	private JSlider cutOffSlider;
 	private JSlider brightnessSlider;
 
-	private LedConfig config;
-	private Ambilight ambilight;
+	private final LedConfig config;
+	private final GUIListener guiListener;
+	private final PortListener portListener;
 
-	private LoopingRunnable currentRunnable;
-	private Thread currentThread;
 
 	private void createUIComponents() {
-		config = new LedConfig();
-
 		previewPanel = new PreviewPanel(config);
 		previewPanel.setPreferredSize(new Dimension(320, 180));
 	}
 
-	public AmbilightFrame() {
+	public ConfigFrame(LedConfig config, GUIListener guiListener, PortListener portListener) {
 		super("Ambilight", "/assets/icon-inner_border.png");
+
+		this.config = config;
+		this.guiListener = guiListener;
+		this.portListener = portListener;
 
 		// setup components
 		setupCloseButton();
@@ -78,22 +77,11 @@ public class AmbilightFrame extends HideableFrame {
 		setUndecorated(true);
 		setType(Window.Type.UTILITY);
 		setAlwaysOnTop(true);
-		setContentPane(getRootPanel());
+		setContentPane(rootPanel);
 		pack();
 		resetLocation();
 		setResizable(false);
 		setVisible(true);
-
-		// setup ambilight
-		ambilight = new AmbilightGdi();
-		ambilight.init(	config.getLedsWidth(),
-						config.getLedsHeight(),
-						config.getLeds());
-
-//		DynamicLedPreview preview = new DynamicLedPreview(config);
-//		previewPanel.setColors(preview.getSegmentColors());
-
-		startLoop("COM3", 10, 30, 100, 1.8, 256, 51);
 	}
 
 	private void setupMinimizeButton() {
@@ -145,9 +133,7 @@ public class AmbilightFrame extends HideableFrame {
 		setupBorderlessButton(livePreviewButton, pauseIcon);
 
 		livePreviewButton.addActionListener(e -> {
-			if (isRunnableRunning()) {
-				currentRunnable.setLivePreview(livePreviewButton.isSelected());
-			}
+			guiListener.setLivePreview(livePreviewButton.isSelected());
 
 			//noinspection Duplicates
 			if (livePreviewButton.isSelected()) {
@@ -160,7 +146,6 @@ public class AmbilightFrame extends HideableFrame {
 		});
 	}
 
-
 	private void setupBorderlessButton(JButton button, ImageIcon icon) {
 		button.setIcon(icon);
 		button.setText(null);
@@ -172,16 +157,13 @@ public class AmbilightFrame extends HideableFrame {
 //		button.setBorder(BorderFactory.createEmptyBorder(-2, -1, -1, -2));
 //		button.setBorderPainted(false);
 
-		button.addChangeListener(new ChangeListener() {
-			@Override
-			public void stateChanged(ChangeEvent e) {
-				if (button.getModel().isPressed()) {
-					button.setBackground(new Color(143, 177, 204));
-				} else if (button.getModel().isRollover()) {
-					button.setBackground(new Color(161, 199, 230));
-				} else {
-					button.setBackground(null);
-				}
+		button.addChangeListener(e -> {
+			if (button.getModel().isPressed()) {
+				button.setBackground(new Color(143, 177, 204));
+			} else if (button.getModel().isRollover()) {
+				button.setBackground(new Color(161, 199, 230));
+			} else {
+				button.setBackground(null);
 			}
 		});
 	}
@@ -190,11 +172,9 @@ public class AmbilightFrame extends HideableFrame {
 		refreshPortNames();
 
 		portNamesComboBox.addItemListener(e -> {
-			if (isRunnableRunning()) {
-				if (e.getStateChange() == ItemEvent.SELECTED) {
-					String port = (String) portNamesComboBox.getSelectedItem();
-					currentRunnable.setPortName(port);
-				}
+			if (e.getStateChange() == ItemEvent.SELECTED) {
+				String port = (String) portNamesComboBox.getSelectedItem();
+				portListener.setPortName(port);
 			}
 		});
 	}
@@ -208,30 +188,24 @@ public class AmbilightFrame extends HideableFrame {
 	}
 	private void setupRenderRateSlider() {
 		renderRateSlider.addChangeListener(e -> {
-			if (isRunnableRunning()) {
-				int renderRate = renderRateSlider.getValue();
-				if (renderRate == 0)
-					renderRate = 1;
-				currentRunnable.setRenderRate(renderRate);
-			}
+			int renderRate = renderRateSlider.getValue();
+			if (renderRate == 0)
+				renderRate = 1;
+			guiListener.setRenderRate(renderRate);
 		});
 	}
 	private void setupUpdateRateSlider() {
 		updateRateSlider.addChangeListener(e -> {
-			if (isRunnableRunning()) {
-				int updateRate = updateRateSlider.getValue();
-				if (updateRate == 0)
-					updateRate = 1;
-				currentRunnable.setUpdateRate(updateRate);
-			}
+			int updateRate = updateRateSlider.getValue();
+			if (updateRate == 0)
+				updateRate = 1;
+			guiListener.setUpdateRate(updateRate);
 		});
 	}
 	private void setupSmoothnessSlider() {
 		smoothnessSlider.addChangeListener(e -> {
-			if (isRunnableRunning()) {
-				int smoothness = smoothnessSlider.getValue();
-				currentRunnable.setSmoothness(smoothness);
-			}
+			int smoothness = smoothnessSlider.getValue();
+			guiListener.setSmoothness(smoothness);
 		});
 	}
 	private void setupSaturationSlider() {
@@ -245,10 +219,8 @@ public class AmbilightFrame extends HideableFrame {
 		saturationSlider.setLabelTable(labelTable);
 
 		saturationSlider.addChangeListener(e -> {
-			if (isRunnableRunning()) {
-				double saturation = (double) saturationSlider.getValue() / 10.0;
-				currentRunnable.setSaturation(saturation);
-			}
+			double saturation = (double) saturationSlider.getValue() / 10.0;
+			guiListener.setSaturation(saturation);
 		});
 	}
 	private void setupBrightnessSlider() {
@@ -261,10 +233,8 @@ public class AmbilightFrame extends HideableFrame {
 		brightnessSlider.setLabelTable(labelTable);
 
 		brightnessSlider.addChangeListener(e -> {
-			if (isRunnableRunning()) {
-				int brightness = brightnessSlider.getValue();
-				currentRunnable.setBrightness(brightness);
-			}
+			int brightness = brightnessSlider.getValue();
+			guiListener.setBrightness(brightness);
 		});
 	}
 	private void setupCutOffSlider() {
@@ -278,22 +248,9 @@ public class AmbilightFrame extends HideableFrame {
 		cutOffSlider.setLabelTable(labelTable);
 
 		cutOffSlider.addChangeListener(e -> {
-			if (isRunnableRunning()) {
-				int cutOff = cutOffSlider.getValue();
-				currentRunnable.setCutOff(cutOff);
-			}
+			int cutOff = cutOffSlider.getValue();
+			guiListener.setCutOff(cutOff);
 		});
-	}
-
-	private void startLoop(String portName, int renderRate, int updateRate, int smoothness, double saturation, int brightness, int cutOff) {
-		currentRunnable = new LoopingRunnable(ambilight, config, previewPanel, portName, renderRate, updateRate, smoothness, saturation, brightness, cutOff);
-
-		currentThread = new Thread(currentRunnable);
-		currentThread.start();
-	}
-
-	private boolean isRunnableRunning() {
-		return currentThread != null && currentThread.isAlive() && currentRunnable != null;
 	}
 
 	private void refreshPortNames() {
@@ -307,11 +264,11 @@ public class AmbilightFrame extends HideableFrame {
 			portNamesComboBox.addItem(portName);
 			System.out.println(portName);
 		}
-
 	}
 
-	public JPanel getRootPanel() {
-		return rootPanel;
+	@Override
+	public void updatedSegmentColors(@NotNull byte[][] segmentColors) {
+		previewPanel.setColors(segmentColors);
 	}
 
 }
