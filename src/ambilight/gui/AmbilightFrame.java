@@ -16,7 +16,7 @@ import java.util.Hashtable;
 
 public class AmbilightFrame extends HideableFrame {
 
-	private static final String EMPTY_PORT_NAME = "- no port available -";
+	public static final String EMPTY_PORT_NAME = "- no port available -";
 
 	private JPanel rootPanel;
 	private JComboBox<String> portNamesComboBox;
@@ -28,11 +28,11 @@ public class AmbilightFrame extends HideableFrame {
 	private JButton closeButton;
 	private JButton minimizeButton;
 	private JButton pinButton;
+	private JButton livePreviewButton;
 	private JPanel toolbarPanel;
 	private JPanel updatePanel;
 	private JSlider saturationSlider;
 	private JSlider smoothnessSlider;
-	private JButton playStopButton;
 	private JSlider cutOffSlider;
 	private JSlider brightnessSlider;
 
@@ -55,6 +55,7 @@ public class AmbilightFrame extends HideableFrame {
 		// setup components
 		setupCloseButton();
 		setupMinimizeButton();
+		setupLivePreviewButton();
 		setupPinButton();
 
 		setupPortComboBox();
@@ -68,8 +69,6 @@ public class AmbilightFrame extends HideableFrame {
 
 		setupPortComboBox();
 		setupSaturationSlider();
-
-		setupPlayStopButton();
 
 		rootPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
 
@@ -97,32 +96,6 @@ public class AmbilightFrame extends HideableFrame {
 		startLoop("COM3", 10, 30, 100, 1.8, 256, 51);
 	}
 
-	private void setupPlayStopButton() {
-
-		String playIconPath = "/assets/ic_play_32.png";
-		String pauseIconPath = "/assets/ic_pause_32.png";
-
-		ImageIcon playIcon = new ImageIcon(this.getClass().getResource(playIconPath));
-		ImageIcon pauseIcon = new ImageIcon(this.getClass().getResource(pauseIconPath));
-
-		setupBorderlessButton(playStopButton, pauseIcon);
-
-		playStopButton.addActionListener(e -> {
-			//noinspection Duplicates
-			if (playStopButton.isSelected()) {
-				playStopButton.setSelected(false);
-				playStopButton.setIcon(playIcon);
-			} else {
-				playStopButton.setSelected(true);
-				playStopButton.setIcon(pauseIcon);
-			}
-		});
-
-	}
-
-	// TODO: update arduino to turn off leds when there is no input signal
-	// TODO: add option to turn off live mode and display solid color/spectrum
-
 	private void setupMinimizeButton() {
 		String minimizeIconPath = "/assets/ic_minimize_32.png";
 		ImageIcon minimizeIcon = new ImageIcon(this.getClass().getResource(minimizeIconPath));
@@ -148,6 +121,7 @@ public class AmbilightFrame extends HideableFrame {
 
 		setupBorderlessButton(pinButton, pinDisabledIcon);
 
+		//noinspection Duplicates
 		pinButton.addActionListener(e -> {
 			setMinimizeAutomatically(pinButton.isSelected());
 
@@ -161,6 +135,32 @@ public class AmbilightFrame extends HideableFrame {
 			}
 		});
 	}
+	private void setupLivePreviewButton() {
+		String playIconPath = "/assets/ic_play_32.png";
+		String pauseIconPath = "/assets/ic_pause_32.png";
+
+		ImageIcon playIcon = new ImageIcon(this.getClass().getResource(playIconPath));
+		ImageIcon pauseIcon = new ImageIcon(this.getClass().getResource(pauseIconPath));
+
+		setupBorderlessButton(livePreviewButton, pauseIcon);
+
+		livePreviewButton.addActionListener(e -> {
+			if (isRunnableRunning()) {
+				currentRunnable.setLivePreview(livePreviewButton.isSelected());
+			}
+
+			//noinspection Duplicates
+			if (livePreviewButton.isSelected()) {
+				livePreviewButton.setSelected(false);
+				livePreviewButton.setIcon(pauseIcon);
+			} else {
+				livePreviewButton.setSelected(true);
+				livePreviewButton.setIcon(playIcon);
+			}
+		});
+	}
+
+
 	private void setupBorderlessButton(JButton button, ImageIcon icon) {
 		button.setIcon(icon);
 		button.setText(null);
@@ -286,7 +286,7 @@ public class AmbilightFrame extends HideableFrame {
 	}
 
 	private void startLoop(String portName, int renderRate, int updateRate, int smoothness, double saturation, int brightness, int cutOff) {
-		currentRunnable = new LoopingRunnable(portName, renderRate, updateRate, smoothness, saturation, brightness, cutOff);
+		currentRunnable = new LoopingRunnable(ambilight, config, previewPanel, portName, renderRate, updateRate, smoothness, saturation, brightness, cutOff);
 
 		currentThread = new Thread(currentRunnable);
 		currentThread.start();
@@ -310,207 +310,10 @@ public class AmbilightFrame extends HideableFrame {
 
 	}
 
-
 	public JPanel getRootPanel() {
 		return rootPanel;
 	}
 
-
-	private class LoopingRunnable implements Runnable {
-
-		private static final short MAX_FADE = 256;
-		private static final float Pr = 0.299f;
-		private static final float Pg = 0.587f;
-		private static final float Pb = 0.114f;
-
-		private long currentTime;
-		private long renderTime;
-		private long updateTime;
-		private long lastUpdateTime;
-		private long lastRenderTime;
-		private int smoothness;
-		private double saturation;
-		private int cutOff;
-		private int brightness;
-		private boolean running;
-
-		private String portName;
-
-		private final SerialConnection connection;
-
-		private byte[][] targetSegmentColors;
-		private byte[][] segmentColors;
-
-
-		public LoopingRunnable(String portName, long renderRate, long updateRate, int smoothness, double saturation, int brightness, int cutOff) {
-			this.portName = portName;
-			this.renderTime = 1000 / renderRate;
-			this.updateTime = 1000 / updateRate;
-			this.smoothness = smoothness;
-			this.saturation = saturation;
-			this.brightness = brightness;
-			this.cutOff = cutOff;
-
-			currentTime = System.currentTimeMillis();
-			lastRenderTime = currentTime;
-			lastUpdateTime = currentTime;
-			running = true;
-			segmentColors = new byte[config.getLedCount()][3];
-			targetSegmentColors = segmentColors;
-
-			connection = new SerialConnection(config);
-
-			System.out.println("Created new looping Runnable");
-		}
-
-		public void setPortName(String portName) {
-			if (!this.portName.equals(portName) && !portName.equals(EMPTY_PORT_NAME)) {
-				try {
-					connection.reopen(portName);
-				} catch (SerialPortException e) {
-					System.out.println("Exception port " + e.getPortName() +
-									   ": " + e.getExceptionType() +
-									   " (" + e.getMethodName() + ")");
-				}
-			}
-			this.portName = portName;
-		}
-		public void setRenderRate(long renderRate) {
-			this.renderTime = 1000 / renderRate;
-		}
-		public void setUpdateRate(long updateRate) {
-			this.updateTime = 1000 / updateRate;
-		}
-		public void setSmoothness(int smoothness) {
-			this.smoothness = smoothness;
-		}
-		public void setSaturation(double saturation) {
-			this.saturation = saturation;
-		}
-		public void setCutOff(int cutOff) {
-			this.cutOff = cutOff;
-		}
-		public void setBrightness(int brightness) {
-			this.brightness = brightness;
-		}
-
-		@Override
-		public void run() {
-			try {
-				connection.open(portName);
-			} catch (SerialPortException e) {
-				System.out.println("Exception port " + e.getPortName() +
-								   ": " + e.getExceptionType() +
-								   " (" + e.getMethodName() + ")");
-			}
-
-			while (running) {
-				if ((currentTime - lastRenderTime) >= renderTime) {
-					render();
-					lastRenderTime = System.currentTimeMillis();
-				}
-
-				if ((currentTime - lastUpdateTime) >= updateTime) {
-					update();
-					lastUpdateTime = System.currentTimeMillis();
-				}
-
-				currentTime = System.currentTimeMillis();
-				while ((currentTime - lastRenderTime) < renderTime &&
-					   (currentTime - lastUpdateTime) < updateTime) {
-					try {
-						Thread.sleep(1);
-					} catch (InterruptedException ignored) {
-					}
-					currentTime = System.currentTimeMillis();
-				}
-			}
-
-			connection.close();
-		}
-
-		private void render() {
-			targetSegmentColors = ambilight.getScreenSegmentsColors();
-			if (saturation != 1.0)
-				updateSaturation();
-			if (cutOff != 0)
-				updateCutOff();
-			if (brightness != 256)
-				updateBrightness();
-		}
-
-		private void update() {
-			if (smoothness == 0) {
-				previewPanel.setColors(targetSegmentColors);
-				connection.sendColors(targetSegmentColors);
-			} else {
-				smoothSegmentColors();
-				previewPanel.setColors(segmentColors);
-				connection.sendColors(segmentColors);
-			}
-		}
-
-		private void updateSaturation() {
-			for (int i = 0; i < config.getLedCount(); i++) {
-				int R = targetSegmentColors[i][0] & 0xFF;
-				int G = targetSegmentColors[i][1] & 0xFF;
-				int B = targetSegmentColors[i][2] & 0xFF;
-
-				double P = Math.sqrt(R*R*Pr + G*G*Pg + B*B*Pb);
-
-				targetSegmentColors[i][0] = (byte) Math.min(Math.max(0, (P + (R-P) * saturation)), 255);
-				targetSegmentColors[i][1] = (byte) Math.min(Math.max(0, (P + (G-P) * saturation)), 255);
-				targetSegmentColors[i][2] = (byte) Math.min(Math.max(0, (P + (B-P) * saturation)), 255);
-			}
-		}
-
-		private void updateBrightness() {
-			for (int i = 0; i < config.getLedCount(); i++) {
-				targetSegmentColors[i][0] = (byte) ((targetSegmentColors[i][0] & 0xFF) * brightness / 256);
-				targetSegmentColors[i][1] = (byte) ((targetSegmentColors[i][1] & 0xFF) * brightness / 256);
-				targetSegmentColors[i][2] = (byte) ((targetSegmentColors[i][2] & 0xFF) * brightness / 256);
-			}
-		}
-
-		private void updateCutOff() {
-			if (cutOff == 255) {
-				for (int i = 0; i < config.getLedCount(); i++) {
-					targetSegmentColors[i][0] = 0;
-					targetSegmentColors[i][1] = 0;
-					targetSegmentColors[i][2] = 0;
-				}
-			} else {
-				for (int i = 0; i < config.getLedCount(); i++) {
-					int R = targetSegmentColors[i][0] & 0xFF;
-					int G = targetSegmentColors[i][1] & 0xFF;
-					int B = targetSegmentColors[i][2] & 0xFF;
-
-					double HSVValue = (0.2126 * R + 0.7152 * G + 0.0722 * B);
-					double multi = Math.max(0, 255 * (HSVValue - cutOff)/(255 - cutOff));
-
-					targetSegmentColors[i][0] = (byte) (R * multi / HSVValue);
-					targetSegmentColors[i][1] = (byte) (G * multi / HSVValue);
-					targetSegmentColors[i][2] = (byte) (B * multi / HSVValue);
-//					targetSegmentColors[i][0] = (byte) (Math.max(0, (targetSegmentColors[i][0] & 0xFF) - cutOff) * 255 / (255 - cutOff));
-//					targetSegmentColors[i][1] = (byte) (Math.max(0, (targetSegmentColors[i][1] & 0xFF) - cutOff) * 255 / (255 - cutOff));
-//					targetSegmentColors[i][2] = (byte) (Math.max(0, (targetSegmentColors[i][2] & 0xFF) - cutOff) * 255 / (255 - cutOff));
-				}
-			}
-		}
-
-		private void smoothSegmentColors() {
-			final short fade = (short) (smoothness);
-			final short fadeInv = (short) (MAX_FADE - fade);
-
-			for (int ledNum = 0; ledNum < config.getLedCount(); ledNum++) {
-				segmentColors[ledNum][0] = (byte) (((segmentColors[ledNum][0] & 0xFF) * fade + (targetSegmentColors[ledNum][0] & 0xFF) * fadeInv) / MAX_FADE);
-				segmentColors[ledNum][1] = (byte) (((segmentColors[ledNum][1] & 0xFF) * fade + (targetSegmentColors[ledNum][1] & 0xFF) * fadeInv) / MAX_FADE);
-				segmentColors[ledNum][2] = (byte) (((segmentColors[ledNum][2] & 0xFF) * fade + (targetSegmentColors[ledNum][2] & 0xFF) * fadeInv) / MAX_FADE);
-			}
-		}
-
-
-	}
 }
 
 

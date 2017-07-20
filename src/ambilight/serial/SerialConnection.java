@@ -3,7 +3,7 @@ package ambilight.serial;
 import ambilight.LedConfig;
 import jssc.*;
 
-public class SerialConnection {
+public class SerialConnection implements java.lang.AutoCloseable {
 
 	private byte[] serialData;
 
