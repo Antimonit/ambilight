@@ -54,7 +54,7 @@ class Main private constructor() {
 		connection = SerialConnection(config)
 
 		connectionAdapter.setSerialConnection(connection)
-		connectionAdapter.open("COM3")
+		connectionAdapter.open(Preferences.port)
 
 		// create a thread that repeatedly takes screenshots and returns colors back via a listener
 		val renderRate:Long = 10

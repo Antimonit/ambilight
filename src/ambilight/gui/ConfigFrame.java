@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import ambilight.GUIListener;
 import ambilight.LedConfig;
 import ambilight.PortListener;
+import ambilight.Preferences;
 import jssc.SerialPortList;
 
 import javax.swing.*;
@@ -175,6 +176,7 @@ public class ConfigFrame extends HideableFrame implements LoopingRunnable.Segmen
 			if (e.getStateChange() == ItemEvent.SELECTED) {
 				String port = (String) portNamesComboBox.getSelectedItem();
 				portListener.setPortName(port);
+				Preferences.INSTANCE.setPort(port);
 			}
 		});
 	}
@@ -260,10 +262,13 @@ public class ConfigFrame extends HideableFrame implements LoopingRunnable.Segmen
 		if (portNames.length == 0) {
 			portNamesComboBox.addItem(EMPTY_PORT_NAME);
 		}
-		for (String portName : portNames) {
-			portNamesComboBox.addItem(portName);
+		System.out.println("Available ports:");
+		for (int i = 0; i < portNames.length; i++) {
+			String portName = portNames[i];
+			portNamesComboBox.insertItemAt(portName, i);
 			System.out.println(portName);
 		}
+		portNamesComboBox.setSelectedItem(Preferences.INSTANCE.getPort());
 	}
 
 	@Override

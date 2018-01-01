@@ -83,8 +83,8 @@ public class LoopingRunnable implements Runnable, GUIListener {
 			if ((currentTime - lastRenderTime) >= renderTime) {
 				if (isLivePreview) {
 					render();
-					lastRenderTime = System.currentTimeMillis();
 				}
+				lastRenderTime = System.currentTimeMillis();
 			}
 
 			if ((currentTime - lastUpdateTime) >= updateTime) {
