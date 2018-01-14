@@ -29,11 +29,11 @@ public class ConfigFrame extends HideableFrame implements LoopingRunnable.Segmen
 	private JButton pinButton;
 	private JButton livePreviewButton;
 	private JPanel toolbarPanel;
-	private JPanel updatePanel;
 	private JSlider saturationSlider;
 	private JSlider smoothnessSlider;
 	private JSlider cutOffSlider;
 	private JSlider brightnessSlider;
+	private JSlider temperatureSlider;
 
 	private final LedConfig config;
 	private final GUIListener guiListener;
@@ -66,6 +66,7 @@ public class ConfigFrame extends HideableFrame implements LoopingRunnable.Segmen
 		setupSaturationSlider();
 		setupBrightnessSlider();
 		setupCutOffSlider();
+		setupTemperatureSlider();
 
 		setupPortComboBox();
 		setupSaturationSlider();
@@ -175,8 +176,12 @@ public class ConfigFrame extends HideableFrame implements LoopingRunnable.Segmen
 		portNamesComboBox.addItemListener(e -> {
 			if (e.getStateChange() == ItemEvent.SELECTED) {
 				String port = (String) portNamesComboBox.getSelectedItem();
-				portListener.setPortName(port);
-				Preferences.INSTANCE.setPort(port);
+				if (port != null) {
+					portListener.setPortName(port);
+					Preferences.INSTANCE.setPort(port);
+				} else {
+					System.out.println("Port is null.");
+				}
 			}
 		});
 	}
@@ -205,6 +210,14 @@ public class ConfigFrame extends HideableFrame implements LoopingRunnable.Segmen
 		});
 	}
 	private void setupSmoothnessSlider() {
+		Hashtable<Integer, JLabel> labelTable = new Hashtable<>();
+		labelTable.put(0, new JLabel("0"));
+		labelTable.put(64, new JLabel(".25"));
+		labelTable.put(128, new JLabel(".5"));
+		labelTable.put(192, new JLabel(".75"));
+		labelTable.put(256, new JLabel("1"));
+		smoothnessSlider.setLabelTable(labelTable);
+
 		smoothnessSlider.addChangeListener(e -> {
 			int smoothness = smoothnessSlider.getValue();
 			guiListener.setSmoothness(smoothness);
@@ -252,6 +265,19 @@ public class ConfigFrame extends HideableFrame implements LoopingRunnable.Segmen
 		cutOffSlider.addChangeListener(e -> {
 			int cutOff = cutOffSlider.getValue();
 			guiListener.setCutOff(cutOff);
+		});
+	}
+	private void setupTemperatureSlider() {
+		Hashtable<Integer, JLabel> labelTable = new Hashtable<>();
+		labelTable.put(1000, new JLabel("1K"));
+		labelTable.put(4000, new JLabel("4K"));
+		labelTable.put(8000, new JLabel("8K"));
+		labelTable.put(16000, new JLabel("16K"));
+		temperatureSlider.setLabelTable(labelTable);
+
+		temperatureSlider.addChangeListener(e -> {
+			int temperature = temperatureSlider.getValue();
+			guiListener.setTemperature(temperature);
 		});
 	}
 

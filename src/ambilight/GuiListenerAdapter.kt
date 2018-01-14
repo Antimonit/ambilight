@@ -7,13 +7,14 @@ open class GuiListenerAdapter : GUIListener {
 
 	companion object {
 		private val dummyListener: GUIListener = object : GUIListener {
-			override fun setLivePreview(selected: Boolean) {}
+			override fun setLivePreview(isLivePreview: Boolean) {}
 			override fun setRenderRate(renderRate: Long) {}
 			override fun setUpdateRate(updateRate: Long) {}
 			override fun setSmoothness(smoothness: Int) {}
 			override fun setSaturation(saturation: Double) {}
 			override fun setBrightness(brightness: Int) {}
 			override fun setCutOff(cutOff: Int) {}
+			override fun setTemperature(temperature: Int) {}
 		}
 
 		private val dummyPredicate: () -> Boolean = {
@@ -31,9 +32,9 @@ open class GuiListenerAdapter : GUIListener {
 		this.listener = listener ?: dummyListener
 	}
 
-	override fun setLivePreview(selected: Boolean) {
+	override fun setLivePreview(isLivePreview: Boolean) {
 		if (isRunning()) {
-			listener.setLivePreview(selected)
+			listener.setLivePreview(isLivePreview)
 		}
 	}
 
@@ -70,6 +71,12 @@ open class GuiListenerAdapter : GUIListener {
 	override fun setCutOff(cutOff: Int) {
 		if (isRunning()) {
 			listener.setCutOff(cutOff)
+		}
+	}
+
+	override fun setTemperature(temperature: Int) {
+		if (isRunning()) {
+			listener.setTemperature(temperature)
 		}
 	}
 

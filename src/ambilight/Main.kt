@@ -57,19 +57,20 @@ class Main private constructor() {
 		connectionAdapter.open(Preferences.port)
 
 		// create a thread that repeatedly takes screenshots and returns colors back via a listener
-		val renderRate:Long = 10
-		val updateRate:Long = 30
-		val smoothness:Int = 100
-		val saturation:Double = 1.8
-		val brightness:Int = 256
-		val cutOff:Int = 51
+		val renderRate = 10L
+		val updateRate = 30L
+		val smoothness = 100
+		val saturation = 1.8
+		val brightness = 256
+		val cutOff = 30
+		val temperature = 4000
 
 		val colorUpdateListener = LoopingRunnable.SegmentColorsUpdateListener { segmentColors ->
 			window.updatedSegmentColors(segmentColors)
 			connection.sendColors(segmentColors)
 		}
 
-		currentRunnable = LoopingRunnable(ambilight, config, colorUpdateListener, renderRate, updateRate, smoothness, saturation, brightness, cutOff)
+		currentRunnable = LoopingRunnable(ambilight, config, colorUpdateListener, renderRate, updateRate, smoothness, saturation, brightness, cutOff, temperature)
 		currentThread = Thread(currentRunnable)
 		currentThread.start()
 

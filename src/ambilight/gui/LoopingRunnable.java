@@ -28,13 +28,24 @@ public class LoopingRunnable implements Runnable, GUIListener {
 	private double saturation;
 	private int cutOff;
 	private int brightness;
+	private int temperature;
 	private boolean isLivePreview;
 
 	private byte[][] targetSegmentColors;
 	private byte[][] segmentColors;
 
 
-	public LoopingRunnable(Ambilight ambilight, LedConfig config, SegmentColorsUpdateListener listener, long renderRate, long updateRate, int smoothness, double saturation, int brightness, int cutOff) {
+	public LoopingRunnable(Ambilight ambilight,
+						   LedConfig config,
+						   SegmentColorsUpdateListener listener,
+						   long renderRate,
+						   long updateRate,
+						   int smoothness,
+						   double saturation,
+						   int brightness,
+						   int cutOff,
+						   int temperature
+	) {
 		this.ambilight = ambilight;
 		this.config = config;
 		this.listener = listener;
@@ -44,6 +55,7 @@ public class LoopingRunnable implements Runnable, GUIListener {
 		this.saturation = saturation;
 		this.brightness = brightness;
 		this.cutOff = cutOff;
+		this.temperature = temperature;
 
 		currentTime = System.currentTimeMillis();
 		lastRenderTime = currentTime;
@@ -75,6 +87,7 @@ public class LoopingRunnable implements Runnable, GUIListener {
 		this.brightness = brightness;
 	}
 	public void setLivePreview(boolean isLivePreview) { this.isLivePreview = isLivePreview; }
+	public void setTemperature(int temperature) { this.temperature = temperature; }
 
 	@Override
 	public void run() {
@@ -112,6 +125,8 @@ public class LoopingRunnable implements Runnable, GUIListener {
 			updateCutOff();
 		if (brightness != 256)
 			updateBrightness();
+
+		updateTemperature();
 	}
 
 	private void update() {
@@ -144,6 +159,53 @@ public class LoopingRunnable implements Runnable, GUIListener {
 			targetSegmentColors[i][2] = (byte) ((targetSegmentColors[i][2] & 0xFF) * brightness / 256);
 		}
 	}
+
+	private void updateTemperature() {
+		double temperature = this.temperature;
+		temperature /= 100;
+
+		for (int i = 0; i < config.getLedCount(); i++) {
+			double red;
+			double green;
+			double blue;
+			if (temperature <= 66) {
+				red = 255;
+			} else {
+				red = temperature - 60;
+				red = 329.698727446 * Math.pow(red, -0.1332047592);
+				if (red < 0) red = 0;
+				if (red > 255) red = 255;
+			}
+
+			if (temperature <= 66) {
+				green = temperature;
+				green = 99.4708025861 * Math.log(green) - 161.1195681661;
+				if (green < 0) green = 0;
+				if (green > 255) green = 255;
+			} else {
+				green = temperature - 60;
+				green = 288.1221695283 * Math.pow(green, -0.0755148492);
+				if (green < 0) green = 0;
+				if (green > 255) green = 255;
+			}
+
+			if (temperature >= 66) {
+				blue = 255;
+			} else if (temperature <= 19) {
+				blue = 0;
+			} else {
+				blue = temperature - 10;
+				blue = 138.5177312231 * Math.log(blue) - 305.0447927307;
+				if (blue < 0) blue = 0;
+				if (blue > 255) blue = 255;
+			}
+
+			targetSegmentColors[i][0] = (byte) ((targetSegmentColors[i][0] & 0xFF) * red / 256);
+			targetSegmentColors[i][1] = (byte) ((targetSegmentColors[i][1] & 0xFF) * green / 256);
+			targetSegmentColors[i][2] = (byte) ((targetSegmentColors[i][2] & 0xFF) * blue / 256);
+		}
+	}
+
 
 	private void updateCutOff() {
 		if (cutOff == 255) {
@@ -181,6 +243,7 @@ public class LoopingRunnable implements Runnable, GUIListener {
 			segmentColors[ledNum][2] = (byte) (((segmentColors[ledNum][2] & 0xFF) * fade + (targetSegmentColors[ledNum][2] & 0xFF) * fadeInv) / MAX_FADE);
 		}
 	}
+
 
 
 	public interface SegmentColorsUpdateListener {
