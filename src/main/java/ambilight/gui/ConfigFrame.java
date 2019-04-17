@@ -46,7 +46,7 @@ public class ConfigFrame extends HideableFrame implements LoopingRunnable.Segmen
 	}
 
 	public ConfigFrame(LedConfig config, GUIListener guiListener, PortListener portListener) {
-		super("Ambilight", "/assets/icon-inner_border.png");
+		super("Ambilight", "/icon-inner_border.png");
 
 		this.config = config;
 		this.guiListener = guiListener;
@@ -87,7 +87,7 @@ public class ConfigFrame extends HideableFrame implements LoopingRunnable.Segmen
 	}
 
 	private void setupMinimizeButton() {
-		String minimizeIconPath = "/assets/ic_minimize_32.png";
+		String minimizeIconPath = "/ic_minimize_32.png";
 		ImageIcon minimizeIcon = new ImageIcon(this.getClass().getResource(minimizeIconPath));
 
 		setupBorderlessButton(minimizeButton, minimizeIcon);
@@ -95,7 +95,7 @@ public class ConfigFrame extends HideableFrame implements LoopingRunnable.Segmen
 		minimizeButton.addActionListener(e -> hideFrame());
 	}
 	private void setupCloseButton() {
-		String closeIconPath = "/assets/ic_close_32.png";
+		String closeIconPath = "/ic_close_32.png";
 		ImageIcon closeIcon = new ImageIcon(this.getClass().getResource(closeIconPath));
 
 		setupBorderlessButton(closeButton, closeIcon);
@@ -103,8 +103,8 @@ public class ConfigFrame extends HideableFrame implements LoopingRunnable.Segmen
 		closeButton.addActionListener(e -> exit());
 	}
 	private void setupPinButton() {
-		String pinEnabledIconPath = "/assets/ic_pin_enabled_32.png";
-		String pinDisabledIconPath = "/assets/ic_pin_disabled_32.png";
+		String pinEnabledIconPath = "/ic_pin_enabled_32.png";
+		String pinDisabledIconPath = "/ic_pin_disabled_32.png";
 
 		ImageIcon pinEnabledIcon = new ImageIcon(this.getClass().getResource(pinEnabledIconPath));
 		ImageIcon pinDisabledIcon = new ImageIcon(this.getClass().getResource(pinDisabledIconPath));
@@ -126,8 +126,8 @@ public class ConfigFrame extends HideableFrame implements LoopingRunnable.Segmen
 		});
 	}
 	private void setupLivePreviewButton() {
-		String playIconPath = "/assets/ic_play_32.png";
-		String pauseIconPath = "/assets/ic_pause_32.png";
+		String playIconPath = "/ic_play_32.png";
+		String pauseIconPath = "/ic_pause_32.png";
 
 		ImageIcon playIcon = new ImageIcon(this.getClass().getResource(playIconPath));
 		ImageIcon pauseIcon = new ImageIcon(this.getClass().getResource(pauseIconPath));
@@ -186,7 +186,7 @@ public class ConfigFrame extends HideableFrame implements LoopingRunnable.Segmen
 		});
 	}
 	private void setupPortRefreshButton() {
-		String refreshIconPath = "/assets/ic_refresh_24.png";
+		String refreshIconPath = "/ic_refresh_24.png";
 		ImageIcon refreshIcon = new ImageIcon(this.getClass().getResource(refreshIconPath));
 
 		portRefreshButton.setIcon(refreshIcon);
