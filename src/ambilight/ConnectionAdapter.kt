@@ -10,14 +10,15 @@ import jssc.SerialPortException
 open class ConnectionAdapter : Connection, PortListener {
 
 	companion object {
+
+		private const val EMPTY_PORT_NAME = ConfigFrame.EMPTY_PORT_NAME
+
 		private val dummyListener: Connection = object : Connection {
 			override fun open(portName: String) {}
 			override fun sendColors(segmentColors: Array<ByteArray>) {}
 			override fun close() {}
 		}
 	}
-
-	private val EMPTY_PORT_NAME = ConfigFrame.EMPTY_PORT_NAME
 
 	private var connection: Connection = dummyListener
 	private var port: String = ""
@@ -60,5 +61,4 @@ open class ConnectionAdapter : Connection, PortListener {
 			connection.sendColors(segmentColors)
 		}
 	}
-
 }

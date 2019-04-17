@@ -7,52 +7,43 @@ import ambilight.serial.SerialConnection
 import javax.swing.SwingUtilities
 import javax.swing.UIManager
 
-
 class Main private constructor() {
 
 	companion object {
 
-		@JvmStatic fun main(args: Array<String>) {
-
+		@JvmStatic
+		fun main(args: Array<String>) {
 			try {
 				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
 			} catch (ignored: Exception) {
 			}
-
 			SwingUtilities.invokeLater { Main() }
-
 		}
 	}
 
 	// Configuration of our LED system
-	private val config: LedConfig = LedConfig()
+	private val config = LedConfig()
+
 	// Bridge between Ambilight implementation and GUI frame
-	private val guiListenerAdapter: GuiListenerAdapter = GuiListenerAdapter()
+	private val guiListenerAdapter = GuiListenerAdapter()
+
 	// Bridge between Ambilight implementation and SerialConnection
-	private val connectionAdapter: ConnectionAdapter = ConnectionAdapter()
+	private val connectionAdapter = ConnectionAdapter()
 
-	private val ambilight: Ambilight
+	// GUI frame
+	private val window = ConfigFrame(config, guiListenerAdapter, connectionAdapter)
 
-	private val window: ConfigFrame
+	// Setup ambilight
+	private val ambilight: Ambilight = AmbilightGdi(
+		config.ledsWidth,
+		config.ledsHeight,
+		config.leds
+	)
 
-	private val connection: Connection
-
-	private val currentRunnable: LoopingRunnable?
-	private val currentThread: Thread?
+	// Serial connection that communicates with Arduino
+	private val connection: Connection = SerialConnection(config)
 
 	init {
-		// Setup GUI frame
-		window = ConfigFrame(config, guiListenerAdapter, connectionAdapter)
-
-		// Setup ambilight
-		ambilight = AmbilightGdi()
-		ambilight.init(config.ledsWidth,
-				config.ledsHeight,
-				config.leds)
-
-		// Setup serial connection
-		connection = SerialConnection(config)
-
 		connectionAdapter.setSerialConnection(connection)
 		connectionAdapter.open(Preferences.port)
 
@@ -70,18 +61,11 @@ class Main private constructor() {
 			connection.sendColors(segmentColors)
 		}
 
-		currentRunnable = LoopingRunnable(ambilight, config, colorUpdateListener, renderRate, updateRate, smoothness, saturation, brightness, cutOff, temperature)
-		currentThread = Thread(currentRunnable)
+		val currentRunnable = LoopingRunnable(ambilight, config, colorUpdateListener, renderRate, updateRate, smoothness, saturation, brightness, cutOff, temperature)
+		val currentThread = Thread(currentRunnable)
 		currentThread.start()
 
-		// TODO: close connection
-
 		// connect looping runnable and GUI
-		guiListenerAdapter.setGUIListener(currentRunnable, this::isRunnableRunning)
+		guiListenerAdapter.setGUIListener(currentRunnable, currentThread::isAlive)
 	}
-
-	private fun isRunnableRunning(): Boolean {
-		return currentThread != null && currentThread.isAlive && currentRunnable != null
-	}
-
 }

@@ -1,12 +1,13 @@
 package ambilight;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import static java.lang.Math.*;
 
-public class AmbilightPreview implements Ambilight {
-
+public class AmbilightPreview extends Ambilight {
 
 	private final LedConfig config;
 	private final byte[][] colors;
@@ -14,7 +15,6 @@ public class AmbilightPreview implements Ambilight {
 
 	private static final int lightCount = 5;
 	private static final double dim = 1.5;
-
 
 	public AmbilightPreview(LedConfig config) {
 		this.config = config;
@@ -28,14 +28,9 @@ public class AmbilightPreview implements Ambilight {
 		for (int i = 0; i < lightCount; i++) {
 			lights.add(new Light(config.getLedsWidth(), config.getLedsHeight()));
 		}
-
 	}
 
-	@Override
-	public void init(int ledsWidth, int ledsHeight, int[][] leds) {
-
-	}
-
+	@NotNull
 	@Override
 	public byte[][] getScreenSegmentsColors() {
 		for (int i = 0; i < config.getLedCount(); i++) {
@@ -62,8 +57,6 @@ public class AmbilightPreview implements Ambilight {
 		return colors;
 	}
 
-
-
 	private class Light {
 
 		double x, y;
@@ -71,7 +64,7 @@ public class AmbilightPreview implements Ambilight {
 		double size;
 		int r, g, b;
 
-		public Light(int ledWidth, int ledHeight) {
+		Light(int ledWidth, int ledHeight) {
 			r = (int) (256 * random());
 			g = (int) (256 * random());
 			b = (int) (256 * random());
@@ -86,8 +79,5 @@ public class AmbilightPreview implements Ambilight {
 							   " | y:" + (int) y +
 							   " | size:" + (int) size);
 		}
-
 	}
-
-
 }

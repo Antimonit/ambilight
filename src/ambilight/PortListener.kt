@@ -6,5 +6,4 @@ package ambilight
 interface PortListener {
 
 	fun setPortName(portName: String)
-
 }

@@ -14,5 +14,4 @@ interface Connection  {
 	fun close()
 
 	fun sendColors(segmentColors: Array<ByteArray>)
-
 }

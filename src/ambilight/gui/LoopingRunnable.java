@@ -4,7 +4,6 @@ import ambilight.GUIListener;
 import ambilight.Ambilight;
 import ambilight.LedConfig;
 
-
 /**
  * Created by David Khol [david@khol.me] on 20. 7. 2017.
  */
@@ -34,17 +33,17 @@ public class LoopingRunnable implements Runnable, GUIListener {
 	private byte[][] targetSegmentColors;
 	private byte[][] segmentColors;
 
-
-	public LoopingRunnable(Ambilight ambilight,
-						   LedConfig config,
-						   SegmentColorsUpdateListener listener,
-						   long renderRate,
-						   long updateRate,
-						   int smoothness,
-						   double saturation,
-						   int brightness,
-						   int cutOff,
-						   int temperature
+	public LoopingRunnable(
+			Ambilight ambilight,
+			LedConfig config,
+			SegmentColorsUpdateListener listener,
+			long renderRate,
+			long updateRate,
+			int smoothness,
+			double saturation,
+			int brightness,
+			int cutOff,
+			int temperature
 	) {
 		this.ambilight = ambilight;
 		this.config = config;
@@ -66,7 +65,6 @@ public class LoopingRunnable implements Runnable, GUIListener {
 
 		System.out.println("Created new looping Runnable");
 	}
-
 
 	public void setRenderRate(long renderRate) {
 		this.renderTime = 1000 / renderRate;
@@ -165,6 +163,7 @@ public class LoopingRunnable implements Runnable, GUIListener {
 		temperature /= 100;
 
 		for (int i = 0; i < config.getLedCount(); i++) {
+//			http://www.tannerhelland.com/4435/convert-temperature-rgb-algorithm-code/
 			double red;
 			double green;
 			double blue;
@@ -206,7 +205,6 @@ public class LoopingRunnable implements Runnable, GUIListener {
 		}
 	}
 
-
 	private void updateCutOff() {
 		if (cutOff == 255) {
 			for (int i = 0; i < config.getLedCount(); i++) {
@@ -244,13 +242,9 @@ public class LoopingRunnable implements Runnable, GUIListener {
 		}
 	}
 
-
-
 	public interface SegmentColorsUpdateListener {
 
 		void updatedSegmentColors(byte[][] segmentColors);
-
 	}
-
 }
 

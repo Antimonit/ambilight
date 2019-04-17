@@ -11,44 +11,40 @@ open class HideableFrame(title: String, iconPath: String) : JFrame(title) {
 	private lateinit var mouseClickPoint: Point
 
 	init {
-
 		val icon = ImageIcon(this.javaClass.getResource(iconPath)).image
 		iconImage = icon
 
 		if (SystemTray.isSupported()) {
 
-			val openItem = MenuItem("Open").apply {
-				addActionListener { _ ->
-					showFrame()
-				}
+			val popup = PopupMenu().apply {
+				add(MenuItem("Open").apply {
+					addActionListener {
+						showFrame()
+					}
+				})
+				add(MenuItem("Exit").apply {
+					addActionListener {
+						SystemTray.getSystemTray().remove(trayIcon)
+						System.exit(0)
+					}
+				})
 			}
 
-			val exitItem = MenuItem("Exit").apply {
-				addActionListener { _ ->
-					SystemTray.getSystemTray().remove(trayIcon)
-					System.exit(0)
-				}
-			}
-
-			val popup = PopupMenu()
-			popup.add(openItem)
-			popup.add(exitItem)
-
-			trayIcon = TrayIcon(icon, title, popup)
-			trayIcon.isImageAutoSize = true
-			trayIcon.addMouseListener(object : MouseAdapter() {
-				override fun mouseClicked(e: MouseEvent) {
-					super.mouseClicked(e)
-					if (e.button == MouseEvent.BUTTON1) {
-						if (isShowing) {
-							hideFrame()
-						} else {
-							showFrame()
+			trayIcon = TrayIcon(icon, title, popup).apply {
+				isImageAutoSize = true
+				addMouseListener(object : MouseAdapter() {
+					override fun mouseClicked(e: MouseEvent) {
+						super.mouseClicked(e)
+						if (e.button == MouseEvent.BUTTON1) {
+							if (isShowing) {
+								hideFrame()
+							} else {
+								showFrame()
+							}
 						}
 					}
-				}
-			})
-
+				})
+			}
 
 			try {
 				SystemTray.getSystemTray().add(trayIcon)
@@ -95,12 +91,13 @@ open class HideableFrame(title: String, iconPath: String) : JFrame(title) {
 				setLocation(x, y)
 			}
 		})
-
 	}
 
 	fun resetLocation() {
-		setLocation(Toolkit.getDefaultToolkit().screenSize.width - width - 16,
-				Toolkit.getDefaultToolkit().screenSize.height - height - 56)
+		setLocation(
+			Toolkit.getDefaultToolkit().screenSize.width - width - 16,
+			Toolkit.getDefaultToolkit().screenSize.height - height - 56
+		)
 	}
 
 
@@ -122,5 +119,4 @@ open class HideableFrame(title: String, iconPath: String) : JFrame(title) {
 		}
 		System.exit(0)
 	}
-
 }

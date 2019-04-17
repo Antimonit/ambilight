@@ -13,5 +13,4 @@ interface GUIListener {
 	fun setBrightness(brightness: Int)
 	fun setCutOff(cutOff: Int)
 	fun setTemperature(temperature: Int)
-
 }

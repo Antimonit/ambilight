@@ -1,10 +1,17 @@
 package ambilight;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 
-public class AmbilightJava implements Ambilight {
+/**
+ * This implementation performs all the computation in Java. It works, but the performance is rather
+ * bad. Better use {@link AmbilightGdi} implementation that performs the computation in C language
+ * instead.
+ */
+public class AmbilightJava extends Ambilight {
 
 	private static final boolean ENABLE_FADE = false;
 	private static final short MAX_FADE = 256;
@@ -14,7 +21,6 @@ public class AmbilightJava implements Ambilight {
 	private static final int SAMPLE_COUNT_X = 16;
 	private static final int SAMPLE_COUNT_Y = 16;
 	private static final int SAMPLE_COUNT = SAMPLE_COUNT_X * SAMPLE_COUNT_Y;	// shouldn't be over 256
-
 
 	private int[][] leds;
 	private byte[][] ledColor;
@@ -26,9 +32,7 @@ public class AmbilightJava implements Ambilight {
 
 	private Rectangle dispBounds;
 
-
-	@Override
-	public void init(int ledsWidth, int ledsHeight, int leds[][]) {
+	public AmbilightJava(int ledsWidth, int ledsHeight, @NotNull int[][] leds) {
 		this.leds = leds;
 
 		pixelOffset = new int[leds.length][SAMPLE_COUNT];
@@ -80,6 +84,7 @@ public class AmbilightJava implements Ambilight {
 		}
 	}
 
+	@NotNull
 	@Override
 	public byte[][] getScreenSegmentsColors() {
 		BufferedImage screenshot = robot.createScreenCapture(dispBounds);
@@ -115,5 +120,4 @@ public class AmbilightJava implements Ambilight {
 
 		return ledColor;
 	}
-
 }
