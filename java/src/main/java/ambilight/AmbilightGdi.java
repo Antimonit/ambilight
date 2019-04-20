@@ -19,7 +19,10 @@ import java.io.IOException;
  * <li> Generate C header needed to implement native methods:
  * <ul>{@code $javah -jni ambilight.AmbilightGdi}</ul>
  * <li> Compile C code into a library:
- * <ul>{@code $g++ ambilight_AmbilightGdi.cpp -o ambilight_AmbilightGdi.dll -shared -m64 -I "C:\Program Files\Java\jdk1.8.0_25\include" -I "C:\Program Files\Java\jdk1.8.0_25\include\win32" -lgdi32}</ul>
+ * <ul>{@code $g++ ambilight_AmbilightGdi.cpp -o ambilight_AmbilightGdi.dll -shared -m64
+ * -I "C:\Program Files\Java\jdk1.8.0_25\include"
+ * -I "C:\Program Files\Java\jdk1.8.0_25\include\win32"
+ * -lgdi32}</ul>
  * <i>Note: you might also need extra compilation flags: -static-libgcc -static-libstdc++</i>
  * </ul>
  */

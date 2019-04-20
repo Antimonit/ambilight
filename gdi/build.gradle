@@ -3,6 +3,75 @@ plugins {
     id 'cpp-unit-test'
 }
 
+def props = new Properties()
+file("dir.properties").withInputStream { props.load(it) }
+
+println "Building on OS: " + System.properties['os.name']
+println "Using JDK: " + System.properties['java.home']
+
+def JNI_LIB_DIR = props['jni.lib.dir']
+def JNI_INCLUDE_DIR = props['jni.include.dir']
+
+println "Using JNI lib directory: " + JNI_LIB_DIR
+println "Using JNI include directory: " + JNI_INCLUDE_DIR
+
+model {
+    toolChains {
+        visualCpp(VisualCpp) {
+            installDir "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community"
+            eachPlatform {
+                cppCompiler.withArguments { args ->
+                    args << "-O2"
+                    args << "-shared"
+                    args << "-m64"
+                    args << "-I" + JNI_INCLUDE_DIR
+                    args << "-I" + JNI_INCLUDE_DIR + "/win32"
+                    args << "-lgdi32"
+                }
+                linker.withArguments { args ->
+                    args << "-O2"
+                    args << "-lstdc++"
+                }
+            }
+        }
+
+//        gcc(Gcc) {
+//            eachPlatform {
+////                cppCompiler.executable = "g++"
+////                path "/opt/rh/devtoolset-2/root/usr/bin/gcc"
+//                cppCompiler.withArguments { args ->
+//                    args << "-O2"
+////                    args << "-I" + SYS_INCLUDE_DIR
+////                    args << "-I" + SYS_LOCAL_INCLUDE_DIR
+//                    args << "-I" + JNI_INCLUDE_DIR
+//                    args << "-I" + JNI_INCLUDE_DIR + "/win32"
+//                    args << "-std=c++11"
+//                }
+//                linker.withArguments { args ->
+//                    args << "-O2"
+//                    args << "-lstdc++"
+//                }
+//            }
+//        }
+//        clang(Clang) {
+//            eachPlatform {
+//                cppCompiler.withArguments { args ->
+//                    args << "-O2"
+//                    args << "-I" + SYS_INCLUDE_DIR
+//                    args << "-I" + SYS_LOCAL_INCLUDE_DIR
+//                    args << "-I" + JNI_INCLUDE_DIR
+//                    args << "-I" + JNI_INCLUDE_DIR + "/linux"
+//                    args << "-std=c++11"
+//                }
+//                linker.withArguments { args ->
+//                    args << "-O2"
+//                    args << "-lstdc++"
+//                }
+//            }
+//        }
+    }
+}
+
 library {
     baseName = "greeter"
 }

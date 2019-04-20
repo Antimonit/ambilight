@@ -23,3 +23,4 @@ When the algorithm is implemented in Java, the application
  
 initializes **serial connection** to **Arduino**.
 
+WS2812B LED strip
