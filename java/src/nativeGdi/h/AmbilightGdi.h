@@ -2,8 +2,8 @@
 #include <jni.h>
 /* Header for class ambilight_AmbilightGdi */
 
-#ifndef _Included_ambilight_AmbilightGdi
-#define _Included_ambilight_AmbilightGdi
+#ifndef _Included_AmbilightGdi
+#define _Included_AmbilightGdi
 #ifdef __cplusplus
 extern "C" {
 #endif
