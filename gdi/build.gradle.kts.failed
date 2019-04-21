@@ -1,0 +1,72 @@
+import org.gradle.internal.jvm.Jvm
+
+plugins {
+    id("cpp-library")
+    id("cpp-unit-test")
+}
+
+println("Building on OS: " + System.getProperty("os.name"))
+println("Using JDK: " + System.getProperty("java.home"))
+
+val JNI_LIB_DIR = File(Jvm.current().javaHome, "lib")
+val JNI_INCLUDE_DIR = File(Jvm.current().javaHome, "include")
+
+println("Using JNI lib directory: $JNI_LIB_DIR")
+println("Using JNI include directory: $JNI_INCLUDE_DIR")
+
+library {
+    baseName.set("greeter")
+
+//    sources {
+//        c {
+//            source {
+//                lib library: 'jdk', linkage: 'api'
+//            }
+//        }
+//    }
+
+    this.binaries.configureEach {
+
+    }
+
+    this.targetMachines.set(listOf(
+            machines.linux.x86_64,
+            machines.windows.x86_64
+    ))
+
+//    this.source {
+//        this.from()
+//    }
+//    sources {
+//        c {
+//            source {
+//                lib library: 'jdk', linkage: 'api'
+//            }
+//        }
+//    }
+}
+
+unitTest {
+    baseName.set("greeterTest")
+}
+
+    repositories {
+        named("libs") {
+            val artifactRepository: ArtifactRepository = this
+        }
+//        named<PrebuiltLibraries>("libs").configure {
+////            named("jdk") {
+////                val javaHome = Jvm.current().javaHome
+////                headers.srcDirs(
+////                        "$javaHome/include",
+////                        "$javaHome/include/win32",
+////                        "$javaHome/include/darwin",
+////                        "$javaHome/include/linux",
+////                        "$javaHome/include/freebsd"
+////                )
+////            }
+//        }
+    }
+
+    toolChains {
+    }

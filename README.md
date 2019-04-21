@@ -24,3 +24,9 @@ When the algorithm is implemented in Java, the application
 initializes **serial connection** to **Arduino**.
 
 WS2812B LED strip
+
+### Gradle configuration
+There are several ways how to structure the code and build the application.
+We can use built-in gradle plugin 'c' or 'cpp' together with 'java' plugin in the same module.
+These plugins are deprecated though and replaced with 'cpp-application' and 'cpp-library' plugins.
+(No support for 'c-application' or 'c-library'?)
