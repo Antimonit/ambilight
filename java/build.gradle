@@ -18,6 +18,14 @@ dependencies {
     implementation 'org.slf4j:slf4j-api:1.7.7'
 }
 
+test {
+    systemProperty "java.library.path", file("${buildDir}/libs/nativeGdi/shared").absolutePath
+}
+
+tasks.withType(JavaExec) {
+    systemProperty "java.library.path", file("${buildDir}/libs/nativeGdi/shared").absolutePath
+}
+
 model {
     platforms {
         x64 {
@@ -38,6 +46,21 @@ model {
         }
     }
 
+    toolChains {
+        gcc(Gcc) {
+            eachPlatform {
+                cppCompiler.withArguments { args ->
+                    args << "-O2"
+                    args << "-lgdi32"
+                }
+                linker.withArguments { args ->
+                    args << "-O2"
+                    args << "-lgdi32"
+                }
+            }
+        }
+    }
+
     //noinspection GroovyAssignabilityCheck
     components {
         nativeGdi(NativeLibrarySpec) {
@@ -49,49 +72,10 @@ model {
                     }
                 }
             }
-            binaries.all {
-                cppCompiler.args '-lgdi32'
-                cppCompiler.args '-lgdi32asd'
-            }
-        }
-    }
-
-    toolChains {
-//        gcc(Gcc) {
-//            eachPlatform {
-////                cppCompiler.executable = "g++"
-////                path "/opt/rh/devtoolset-2/root/usr/bin/gcc"
-//                cppCompiler.withArguments { args ->
-//                    args << "-O2"
-////                    args << "-I" + SYS_INCLUDE_DIR
-////                    args << "-I" + SYS_LOCAL_INCLUDE_DIR
-//                    args << "-I" + JNI_INCLUDE_DIR
-//                    args << "-I" + JNI_INCLUDE_DIR + "/win32"
-//                    args << "-std=c++11"
-//                }
-//                linker.withArguments { args ->
-//                    args << "-O2"
-//                    args << "-lstdc++"
-//                }
+//            binaries.all {
+//                cppCompiler.args '-lgdi32'
+//                linker.args '-lgdi32'
 //            }
-//        }
-
-        visualCpp(VisualCpp) {
-//            installDir "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community"
-            eachPlatform {
-                cppCompiler.withArguments { args ->
-//                    args << "-O2"
-//                    args << "-shared"
-                    args << "-lgdi32"
-                    args << "-lgdi3dd2"
-                }
-                linker.withArguments { args ->
-                    args << "-O2"
-                    args << "-lstdc++"
-                    args << "--lgdi32"
-                    args << "--lgdi3dd2"
-                }
-            }
         }
     }
 }
