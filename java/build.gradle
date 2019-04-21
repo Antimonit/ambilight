@@ -47,6 +47,7 @@ model {
     }
 
     toolChains {
+        // TODO: find a way how to include the gdi32.lib for other toolChains other than gcc
         gcc(Gcc) {
             eachPlatform {
                 cppCompiler.withArguments { args ->
@@ -72,10 +73,12 @@ model {
                     }
                 }
             }
-//            binaries.all {
-//                cppCompiler.args '-lgdi32'
-//                linker.args '-lgdi32'
-//            }
+            binaries.all {
+                cppCompiler.args '-static-libgcc'
+                cppCompiler.args '-static-libstdc++'
+                linker.args '-static-libgcc'
+                linker.args '-static-libstdc++'
+            }
         }
     }
 }
