@@ -1,5 +1,9 @@
 package me.khol.ambilight.gui;
 
+import com.intellij.uiDesigner.core.GridConstraints;
+import com.intellij.uiDesigner.core.GridLayoutManager;
+import com.intellij.uiDesigner.core.Spacer;
+
 import org.jetbrains.annotations.NotNull;
 
 import me.khol.ambilight.GUIListener;
@@ -9,6 +13,7 @@ import me.khol.ambilight.Preferences;
 import jssc.SerialPortList;
 
 import javax.swing.*;
+
 import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.util.Arrays;
@@ -81,7 +86,7 @@ public class ConfigFrame extends HideableFrame implements SegmentColorsUpdateLis
 
 		// setup window
 		setUndecorated(true);
-		setType(Window.Type.UTILITY);
+		setType(Type.UTILITY);
 		setAlwaysOnTop(true);
 		setContentPane(rootPanel);
 		pack();
@@ -211,7 +216,7 @@ public class ConfigFrame extends HideableFrame implements SegmentColorsUpdateLis
 	}
 
 	private void setupRenderRateSlider() {
-		renderRateSlider.addChangeListener(e->{
+		renderRateSlider.addChangeListener(e -> {
 			int renderRate = renderRateSlider.getValue();
 			if (renderRate == 0)
 				renderRate = 1;
@@ -312,7 +317,7 @@ public class ConfigFrame extends HideableFrame implements SegmentColorsUpdateLis
 			portNamesComboBox.addItem(EMPTY_PORT_NAME);
 		}
 
-		System.out.println("Available ports: "  + String.join(", ", portNames));
+		System.out.println("Available ports: " + String.join(", ", portNames));
 		for (String portName : portNames) {
 			portNamesComboBox.addItem(portName);
 		}
@@ -334,44 +339,44 @@ public class ConfigFrame extends HideableFrame implements SegmentColorsUpdateLis
 	private void $$$setupUI$$$() {
 		createUIComponents();
 		rootPanel = new JPanel();
-		rootPanel.setLayout(new com.intellij.uiDesigner.core.GridLayoutManager(3, 1, new Insets(0, 0, 0, 0), -1, -1));
+		rootPanel.setLayout(new GridLayoutManager(3, 1, new Insets(0, 0, 0, 0), -1, -1));
 		toolbarPanel = new JPanel();
-		toolbarPanel.setLayout(new com.intellij.uiDesigner.core.GridLayoutManager(1, 5, new Insets(0, 0, 0, 0), 0, 0));
-		rootPanel.add(toolbarPanel, new com.intellij.uiDesigner.core.GridConstraints(0, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_BOTH, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+		toolbarPanel.setLayout(new GridLayoutManager(1, 5, new Insets(0, 0, 0, 0), 0, 0));
+		rootPanel.add(toolbarPanel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
 		closeButton = new JButton();
 		this.$$$loadButtonText$$$(closeButton, ResourceBundle.getBundle("strings").getString("close"));
-		toolbarPanel.add(closeButton, new com.intellij.uiDesigner.core.GridConstraints(0, 4, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, new Dimension(0, 0), new Dimension(32, 32), null, 0, false));
-		final com.intellij.uiDesigner.core.Spacer spacer1 = new com.intellij.uiDesigner.core.Spacer();
-		toolbarPanel.add(spacer1, new com.intellij.uiDesigner.core.GridConstraints(0, 2, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
+		toolbarPanel.add(closeButton, new GridConstraints(0, 4, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, new Dimension(0, 0), new Dimension(32, 32), null, 0, false));
+		final Spacer spacer1 = new Spacer();
+		toolbarPanel.add(spacer1, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
 		minimizeButton = new JButton();
 		this.$$$loadButtonText$$$(minimizeButton, ResourceBundle.getBundle("strings").getString("minimize"));
-		toolbarPanel.add(minimizeButton, new com.intellij.uiDesigner.core.GridConstraints(0, 3, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, new Dimension(0, 0), new Dimension(32, 32), null, 0, false));
+		toolbarPanel.add(minimizeButton, new GridConstraints(0, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, new Dimension(0, 0), new Dimension(32, 32), null, 0, false));
 		pinButton = new JButton();
 		this.$$$loadButtonText$$$(pinButton, ResourceBundle.getBundle("strings").getString("pin"));
-		toolbarPanel.add(pinButton, new com.intellij.uiDesigner.core.GridConstraints(0, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, new Dimension(0, 0), new Dimension(32, 32), null, 0, false));
+		toolbarPanel.add(pinButton, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, new Dimension(0, 0), new Dimension(32, 32), null, 0, false));
 		livePreviewButton = new JButton();
 		this.$$$loadButtonText$$$(livePreviewButton, ResourceBundle.getBundle("strings").getString("live_preview"));
-		toolbarPanel.add(livePreviewButton, new com.intellij.uiDesigner.core.GridConstraints(0, 1, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, new Dimension(0, 0), new Dimension(32, 32), null, 0, false));
+		toolbarPanel.add(livePreviewButton, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, new Dimension(0, 0), new Dimension(32, 32), null, 0, false));
 		contentPanel = new JPanel();
-		contentPanel.setLayout(new com.intellij.uiDesigner.core.GridLayoutManager(8, 3, new Insets(8, 16, 8, 16), -1, -1));
-		rootPanel.add(contentPanel, new com.intellij.uiDesigner.core.GridConstraints(1, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_BOTH, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+		contentPanel.setLayout(new GridLayoutManager(8, 3, new Insets(8, 16, 8, 16), -1, -1));
+		rootPanel.add(contentPanel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
 		final JLabel label1 = new JLabel();
 		this.$$$loadLabelText$$$(label1, ResourceBundle.getBundle("strings").getString("label_port"));
 		label1.setVerifyInputWhenFocusTarget(false);
-		contentPanel.add(label1, new com.intellij.uiDesigner.core.GridConstraints(0, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+		contentPanel.add(label1, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
 		final JLabel label2 = new JLabel();
 		this.$$$loadLabelText$$$(label2, ResourceBundle.getBundle("strings").getString("label_screen.capture.rate"));
-		contentPanel.add(label2, new com.intellij.uiDesigner.core.GridConstraints(1, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+		contentPanel.add(label2, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
 		portNamesComboBox = new JComboBox();
 		final DefaultComboBoxModel defaultComboBoxModel1 = new DefaultComboBoxModel();
 		portNamesComboBox.setModel(defaultComboBoxModel1);
-		contentPanel.add(portNamesComboBox, new com.intellij.uiDesigner.core.GridConstraints(0, 1, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(-1, 22), null, 0, false));
+		contentPanel.add(portNamesComboBox, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(-1, 22), null, 0, false));
 		final JLabel label3 = new JLabel();
 		this.$$$loadLabelText$$$(label3, ResourceBundle.getBundle("strings").getString("label_led.refresh.rate"));
-		contentPanel.add(label3, new com.intellij.uiDesigner.core.GridConstraints(2, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+		contentPanel.add(label3, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
 		portRefreshButton = new JButton();
 		this.$$$loadButtonText$$$(portRefreshButton, ResourceBundle.getBundle("strings").getString("refresh"));
-		contentPanel.add(portRefreshButton, new com.intellij.uiDesigner.core.GridConstraints(0, 2, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, new Dimension(0, 0), new Dimension(24, 24), null, 0, false));
+		contentPanel.add(portRefreshButton, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, new Dimension(0, 0), new Dimension(24, 24), null, 0, false));
 		renderRateSlider = new JSlider();
 		renderRateSlider.setMajorTickSpacing(10);
 		renderRateSlider.setMaximum(30);
@@ -381,7 +386,7 @@ public class ConfigFrame extends HideableFrame implements SegmentColorsUpdateLis
 		renderRateSlider.setPaintTicks(false);
 		renderRateSlider.setSnapToTicks(true);
 		renderRateSlider.setValue(10);
-		contentPanel.add(renderRateSlider, new com.intellij.uiDesigner.core.GridConstraints(1, 1, 1, 2, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+		contentPanel.add(renderRateSlider, new GridConstraints(1, 1, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
 		updateRateSlider = new JSlider();
 		updateRateSlider.setMajorTickSpacing(15);
 		updateRateSlider.setMaximum(60);
@@ -391,10 +396,10 @@ public class ConfigFrame extends HideableFrame implements SegmentColorsUpdateLis
 		updateRateSlider.setPaintTicks(false);
 		updateRateSlider.setSnapToTicks(true);
 		updateRateSlider.setValue(30);
-		contentPanel.add(updateRateSlider, new com.intellij.uiDesigner.core.GridConstraints(2, 1, 1, 2, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+		contentPanel.add(updateRateSlider, new GridConstraints(2, 1, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
 		final JLabel label4 = new JLabel();
 		this.$$$loadLabelText$$$(label4, ResourceBundle.getBundle("strings").getString("label_saturation"));
-		contentPanel.add(label4, new com.intellij.uiDesigner.core.GridConstraints(4, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+		contentPanel.add(label4, new GridConstraints(4, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
 		saturationSlider = new JSlider();
 		saturationSlider.setMajorTickSpacing(10);
 		saturationSlider.setMaximum(50);
@@ -404,10 +409,10 @@ public class ConfigFrame extends HideableFrame implements SegmentColorsUpdateLis
 		saturationSlider.setPaintTicks(false);
 		saturationSlider.setSnapToTicks(false);
 		saturationSlider.setValue(18);
-		contentPanel.add(saturationSlider, new com.intellij.uiDesigner.core.GridConstraints(4, 1, 1, 2, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+		contentPanel.add(saturationSlider, new GridConstraints(4, 1, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
 		final JLabel label5 = new JLabel();
 		this.$$$loadLabelText$$$(label5, ResourceBundle.getBundle("strings").getString("label_brightness"));
-		contentPanel.add(label5, new com.intellij.uiDesigner.core.GridConstraints(5, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+		contentPanel.add(label5, new GridConstraints(5, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
 		brightnessSlider = new JSlider();
 		brightnessSlider.setMajorTickSpacing(64);
 		brightnessSlider.setMaximum(256);
@@ -417,10 +422,10 @@ public class ConfigFrame extends HideableFrame implements SegmentColorsUpdateLis
 		brightnessSlider.setPaintTicks(false);
 		brightnessSlider.setSnapToTicks(false);
 		brightnessSlider.setValue(256);
-		contentPanel.add(brightnessSlider, new com.intellij.uiDesigner.core.GridConstraints(5, 1, 1, 2, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+		contentPanel.add(brightnessSlider, new GridConstraints(5, 1, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
 		final JLabel label6 = new JLabel();
 		this.$$$loadLabelText$$$(label6, ResourceBundle.getBundle("strings").getString("label_cut.off"));
-		contentPanel.add(label6, new com.intellij.uiDesigner.core.GridConstraints(6, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+		contentPanel.add(label6, new GridConstraints(6, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
 		cutOffSlider = new JSlider();
 		cutOffSlider.setMajorTickSpacing(51);
 		cutOffSlider.setMaximum(255);
@@ -430,10 +435,10 @@ public class ConfigFrame extends HideableFrame implements SegmentColorsUpdateLis
 		cutOffSlider.setPaintTicks(false);
 		cutOffSlider.setSnapToTicks(false);
 		cutOffSlider.setValue(30);
-		contentPanel.add(cutOffSlider, new com.intellij.uiDesigner.core.GridConstraints(6, 1, 1, 2, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+		contentPanel.add(cutOffSlider, new GridConstraints(6, 1, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
 		final JLabel label7 = new JLabel();
 		this.$$$loadLabelText$$$(label7, ResourceBundle.getBundle("strings").getString("label_smoothness"));
-		contentPanel.add(label7, new com.intellij.uiDesigner.core.GridConstraints(3, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+		contentPanel.add(label7, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
 		smoothnessSlider = new JSlider();
 		smoothnessSlider.setMajorTickSpacing(50);
 		smoothnessSlider.setMaximum(256);
@@ -443,10 +448,10 @@ public class ConfigFrame extends HideableFrame implements SegmentColorsUpdateLis
 		smoothnessSlider.setPaintTicks(false);
 		smoothnessSlider.setSnapToTicks(false);
 		smoothnessSlider.setValue(100);
-		contentPanel.add(smoothnessSlider, new com.intellij.uiDesigner.core.GridConstraints(3, 1, 1, 2, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+		contentPanel.add(smoothnessSlider, new GridConstraints(3, 1, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
 		final JLabel label8 = new JLabel();
 		this.$$$loadLabelText$$$(label8, ResourceBundle.getBundle("strings").getString("label_temperature"));
-		contentPanel.add(label8, new com.intellij.uiDesigner.core.GridConstraints(7, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+		contentPanel.add(label8, new GridConstraints(7, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
 		temperatureSlider = new JSlider();
 		temperatureSlider.setMajorTickSpacing(1000);
 		temperatureSlider.setMaximum(16000);
@@ -456,8 +461,8 @@ public class ConfigFrame extends HideableFrame implements SegmentColorsUpdateLis
 		temperatureSlider.setPaintTicks(false);
 		temperatureSlider.setSnapToTicks(false);
 		temperatureSlider.setValue(4000);
-		contentPanel.add(temperatureSlider, new com.intellij.uiDesigner.core.GridConstraints(7, 1, 1, 2, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-		rootPanel.add(previewPanel, new com.intellij.uiDesigner.core.GridConstraints(2, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_BOTH, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+		contentPanel.add(temperatureSlider, new GridConstraints(7, 1, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+		rootPanel.add(previewPanel, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
 		label1.setLabelFor(portNamesComboBox);
 	}
 
@@ -521,10 +526,5 @@ public class ConfigFrame extends HideableFrame implements SegmentColorsUpdateLis
 	public JComponent $$$getRootComponent$$$() {
 		return rootPanel;
 	}
+
 }
-
-
-
-
-
-
