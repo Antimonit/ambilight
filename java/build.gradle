@@ -1,10 +1,7 @@
-import org.gradle.internal.jvm.Jvm
-
 plugins {
     id "java"
     id "application"
     id "org.jetbrains.kotlin.jvm" version "1.3.30"
-    id "cpp"
 }
 
 repositories {
@@ -25,72 +22,4 @@ application {
     mainClassName = 'ambilight.Main'
 }
 
-// C/C++ configuration
-model {
-    platforms {
-        x64 {
-            architecture "x64"
-        }
-    }
-
-    repositories {
-        libs(PrebuiltLibraries) {
-            jdk {
-                File javaHome = Jvm.current().javaHome
-                headers.srcDirs "$javaHome/include",
-                        "$javaHome/include/win32",
-                        "$javaHome/include/darwin",
-                        "$javaHome/include/linux",
-                        "$javaHome/include/freebsd"
-            }
-        }
-    }
-
-    toolChains {
-        gcc(Gcc) {
-            eachPlatform {
-                cppCompiler.withArguments { args ->
-                    args << "-O2"
-                    args << "-lgdi32"
-                }
-                linker.withArguments { args ->
-                    args << "-O2"
-                    args << "-lgdi32"
-                }
-            }
-        }
-        visualCpp(VisualCpp) { visual ->
-            eachPlatform {
-                linker.withArguments {args ->
-                    args << "gdi32.lib"
-                    args << "user32.lib"
-                }
-            }
-        }
-    }
-
-    //noinspection GroovyAssignabilityCheck
-    components {
-        nativeGdi(NativeLibrarySpec) {
-            targetPlatform "x64"
-            sources {
-                cpp {
-                    source {
-                        lib library: 'jdk', linkage: 'api'
-                    }
-                }
-            }
-            binaries.all {
-                cppCompiler.args '-static-libgcc'
-                cppCompiler.args '-static-libstdc++'
-                linker.args '-static-libgcc'
-                linker.args '-static-libstdc++'
-            }
-        }
-    }
-}
-
 run.dependsOn project(':gdi').copyLib(projectDir)
-
-test.dependsOn 'nativeGdiSharedLibrary'
-run.dependsOn 'nativeGdiSharedLibrary'
