@@ -97,3 +97,6 @@ model {
         }
     }
 }
+
+test.dependsOn 'nativeGdiSharedLibrary'
+run.dependsOn 'nativeGdiSharedLibrary'

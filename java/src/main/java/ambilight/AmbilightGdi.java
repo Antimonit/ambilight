@@ -2,9 +2,6 @@ package ambilight;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
-import java.io.IOException;
-
 /**
  * This implementation does not perform any computation itself but delegates all calls to a
  * pre-compiled C library via JNI bridge.
@@ -28,18 +25,8 @@ import java.io.IOException;
  */
 public class AmbilightGdi extends Ambilight {
 
-	private static final String DLL_NAME = "AmbilightGdi.dll";
-
 	static {
-		try {
-			File dir = new File(".");
-			File dllFile = new File(dir.getCanonicalPath() + File.separator + DLL_NAME);
-			String dllFilePath = dllFile.getCanonicalPath();
-			System.out.println("Loading dll: " + dllFilePath);
-			System.load(dllFilePath);
-		} catch (IOException e) {
-			System.out.println("Failed to load dll: " + DLL_NAME);
-		}
+		System.loadLibrary("nativeGdi");
 	}
 
 	public AmbilightGdi(int ledsWidth, int ledsHeight, int[][] leds) {
