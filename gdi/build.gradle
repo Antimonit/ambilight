@@ -5,23 +5,19 @@ plugins {
     id 'cpp-unit-test'
 }
 
-println("Building on OS: " + System.getProperty("os.name"))
-println("Using JDK: " + System.getProperty("java.home"))
-
-def JNI_INCLUDE_DIR = new File(Jvm.current().javaHome, "include")
-
 library {
-    linkage = [Linkage.SHARED]
     baseName = "nativeGdi"
 
     binaries.whenElementFinalized { binary ->
         binary.compileTask.get().configure {
+            outputs.files.forEach { println "outputs.files: $it" }
+            File javaHome = Jvm.current().javaHome
             compilerArgs.addAll([
-                    "-I" + JNI_INCLUDE_DIR,
-                    "-I" + JNI_INCLUDE_DIR + "/win32",
-                    "-I" + JNI_INCLUDE_DIR + "/darwin",
-                    "-I" + JNI_INCLUDE_DIR + "/linux",
-                    "-I" + JNI_INCLUDE_DIR + "/freebsd"
+                    "-I" + "$javaHome/include",
+                    "-I" + "$javaHome/include/win32",
+                    "-I" + "$javaHome/include/darwin",
+                    "-I" + "$javaHome/include/linux",
+                    "-I" + "$javaHome/include/freebsd"
             ])
         }
     }
@@ -55,5 +51,14 @@ model {
                 }
             }
         }
+    }
+}
+
+def copyLib(toDir) {
+    return tasks.create("copyLibrary", Copy) {
+        from "$buildDir/lib/main/debug"
+        into toDir
+        include('**/*.dll')
+        dependsOn "assemble"
     }
 }

@@ -20,14 +20,6 @@ dependencies {
     implementation 'com.intellij:forms_rt:7.0.3'
 }
 
-test {
-    systemProperty "java.library.path", file("${buildDir}/libs/nativeGdi/shared").absolutePath
-}
-
-tasks.withType(JavaExec) {
-    systemProperty "java.library.path", file("${buildDir}/libs/nativeGdi/shared").absolutePath
-}
-
 // Java application configuration
 application {
     mainClassName = 'ambilight.Main'
@@ -97,6 +89,8 @@ model {
         }
     }
 }
+
+run.dependsOn project(':gdi').copyLib(projectDir)
 
 test.dependsOn 'nativeGdiSharedLibrary'
 run.dependsOn 'nativeGdiSharedLibrary'
