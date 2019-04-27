@@ -2,6 +2,7 @@ import org.gradle.internal.jvm.Jvm
 
 plugins {
     id "java"
+    id "application"
     id "org.jetbrains.kotlin.jvm" version "1.3.30"
     id "cpp"
 }
@@ -16,6 +17,7 @@ dependencies {
     implementation 'com.github.kurbatov:firmata4j:2.3.2'
     implementation 'org.scream3r:jssc:2.8.0'
     implementation 'org.slf4j:slf4j-api:1.7.7'
+    implementation 'com.intellij:forms_rt:7.0.3'
 }
 
 test {
@@ -26,6 +28,12 @@ tasks.withType(JavaExec) {
     systemProperty "java.library.path", file("${buildDir}/libs/nativeGdi/shared").absolutePath
 }
 
+// Java application configuration
+application {
+    mainClassName = 'ambilight.Main'
+}
+
+// C/C++ configuration
 model {
     platforms {
         x64 {
