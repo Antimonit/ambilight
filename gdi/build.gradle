@@ -12,7 +12,7 @@ def JNI_INCLUDE_DIR = new File(Jvm.current().javaHome, "include")
 
 library {
     linkage = [Linkage.SHARED]
-    baseName = "AmbilightGdi"
+    baseName = "nativeGdi"
 
     binaries.whenElementFinalized { binary ->
         binary.compileTask.get().configure {
