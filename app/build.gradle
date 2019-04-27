@@ -10,6 +10,8 @@ repositories {
 }
 
 dependencies {
+    implementation project(":connection")
+
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     implementation 'com.github.kurbatov:firmata4j:2.3.2'
     implementation 'org.scream3r:jssc:2.8.0'
@@ -23,5 +25,7 @@ application {
 }
 
 project(':native').afterEvaluate {
-    assemble.dependsOn project(':native').copyLib(projectDir)
+    def copyLibraryTask = project(':native').copyLib(projectDir)
+    run.dependsOn copyLibraryTask
+    assemble.dependsOn copyLibraryTask
 }

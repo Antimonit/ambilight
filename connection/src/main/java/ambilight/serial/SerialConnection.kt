@@ -1,11 +1,10 @@
 package ambilight.serial
 
-import ambilight.LedConfig
 import jssc.*
 
-class SerialConnection(private val ledConfig: LedConfig) : Connection, AutoCloseable {
+class SerialConnection(private val ledCount: Int) : Connection, AutoCloseable {
 
-	private val serialData = ByteArray(ledConfig.ledCount * 3 + 2).also {
+	private val serialData = ByteArray(ledCount * 3 + 2).also {
 		it[0] = 'o'.toByte()
 		it[1] = 'z'.toByte()
 	}
@@ -53,7 +52,7 @@ class SerialConnection(private val ledConfig: LedConfig) : Connection, AutoClose
 
 		// Skip first two bytes which are always the same
 		var dataIndex = 2
-		for (i in 0 until ledConfig.ledCount) {
+		for (i in 0 until ledCount) {
 			val bytes = segmentColors[i]
 			serialData[dataIndex++] = bytes[0]
 			serialData[dataIndex++] = bytes[1]

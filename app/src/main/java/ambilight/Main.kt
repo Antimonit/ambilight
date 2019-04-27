@@ -41,7 +41,7 @@ class Main private constructor() {
 	)
 
 	// Serial connection that communicates with Arduino
-	private val connection: Connection = SerialConnection(config)
+	private val connection: Connection = SerialConnection(config.ledCount)
 
 	init {
 		connectionAdapter.setSerialConnection(connection)
