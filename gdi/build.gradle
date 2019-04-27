@@ -8,19 +8,23 @@ plugins {
 println("Building on OS: " + System.getProperty("os.name"))
 println("Using JDK: " + System.getProperty("java.home"))
 
-def JNI_LIB_DIR = new File(Jvm.current().javaHome, "lib")
 def JNI_INCLUDE_DIR = new File(Jvm.current().javaHome, "include")
 
-println("Using JNI lib directory: $JNI_LIB_DIR")
-println("Using JNI include directory: $JNI_INCLUDE_DIR")
-
 library {
-    linkage = [Linkage.STATIC, Linkage.SHARED]
-    baseName = "greeter"
+    linkage = [Linkage.SHARED]
+    baseName = "AmbilightGdi"
 
-//    source {
-//        lib library: 'jdk', linkage: 'api'
-//    }
+    binaries.whenElementFinalized { binary ->
+        binary.compileTask.get().configure {
+            compilerArgs.addAll([
+                    "-I" + JNI_INCLUDE_DIR,
+                    "-I" + JNI_INCLUDE_DIR + "/win32",
+                    "-I" + JNI_INCLUDE_DIR + "/darwin",
+                    "-I" + JNI_INCLUDE_DIR + "/linux",
+                    "-I" + JNI_INCLUDE_DIR + "/freebsd"
+            ])
+        }
+    }
 }
 
 unitTest {
@@ -28,71 +32,28 @@ unitTest {
 }
 
 model {
-    repositories {
-        libs(PrebuiltLibraries) {
-            jdk {
-                File javaHome = Jvm.current().javaHome
-                headers.srcDirs "$javaHome/include",
-                        "$javaHome/include/win32",
-                        "$javaHome/include/darwin",
-                        "$javaHome/include/linux",
-                        "$javaHome/include/freebsd"
+    toolChains {
+        gcc(Gcc) {
+            eachPlatform {
+                cppCompiler.withArguments { args ->
+                    args << "-O2"
+                    args << "-lgdi32"
+                }
+                linker.withArguments { args ->
+                    args << "-O2"
+                    args << "-lgdi32"
+                    args << "-lstdc++"
+                }
             }
         }
-    }
 
-    toolChains {
-//        visualCpp(VisualCpp) {
-//            installDir "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community"
-//            eachPlatform {
-//                cppCompiler.withArguments { args ->
-//                    args << "-O2"
-//                    args << "-shared"
-//                    args << "-m64"
-//                    args << "-I" + JNI_INCLUDE_DIR
-//                    args << "-I" + JNI_INCLUDE_DIR + "/win32"
-//                    args << "-lgdi32"
-//                }
-//                linker.withArguments { args ->
-//                    args << "-O2"
-//                    args << "-lstdc++"
-//                }
-//            }
-//        }
-
-//        gcc(Gcc) {
-//            eachPlatform {
-////                cppCompiler.executable = "g++"
-////                path "/opt/rh/devtoolset-2/root/usr/bin/gcc"
-//                cppCompiler.withArguments { args ->
-//                    args << "-O2"
-////                    args << "-I" + SYS_INCLUDE_DIR
-////                    args << "-I" + SYS_LOCAL_INCLUDE_DIR
-//                    args << "-I" + JNI_INCLUDE_DIR
-//                    args << "-I" + JNI_INCLUDE_DIR + "/win32"
-//                    args << "-std=c++11"
-//                }
-//                linker.withArguments { args ->
-//                    args << "-O2"
-//                    args << "-lstdc++"
-//                }
-//            }
-//        }
-//        clang(Clang) {
-//            eachPlatform {
-//                cppCompiler.withArguments { args ->
-//                    args << "-O2"
-//                    args << "-I" + SYS_INCLUDE_DIR
-//                    args << "-I" + SYS_LOCAL_INCLUDE_DIR
-//                    args << "-I" + JNI_INCLUDE_DIR
-//                    args << "-I" + JNI_INCLUDE_DIR + "/linux"
-//                    args << "-std=c++11"
-//                }
-//                linker.withArguments { args ->
-//                    args << "-O2"
-//                    args << "-lstdc++"
-//                }
-//            }
-//        }
+        visualCpp(VisualCpp) { visual ->
+            eachPlatform {
+                linker.withArguments {args ->
+                    args << "gdi32.lib"
+                    args << "user32.lib"
+                }
+            }
+        }
     }
 }
