@@ -22,4 +22,6 @@ application {
     mainClassName = 'ambilight.Main'
 }
 
-run.dependsOn project(':gdi').copyLib(projectDir)
+project(':native').afterEvaluate {
+    assemble.dependsOn project(':native').copyLib(projectDir)
+}
