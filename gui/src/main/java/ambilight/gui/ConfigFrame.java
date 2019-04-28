@@ -11,13 +11,15 @@ import jssc.SerialPortList;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ItemEvent;
+import java.util.Arrays;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.ResourceBundle;
 
 
 public class ConfigFrame extends HideableFrame implements LoopingRunnable.SegmentColorsUpdateListener {
 
-	public static final String EMPTY_PORT_NAME = "- no port available -";
+	private static final String EMPTY_PORT_NAME = "- no port available -";
 
 	private JPanel rootPanel;
 	private JComboBox<String> portNamesComboBox;
@@ -183,7 +185,11 @@ public class ConfigFrame extends HideableFrame implements LoopingRunnable.Segmen
 			if (e.getStateChange() == ItemEvent.SELECTED) {
 				String port = (String) portNamesComboBox.getSelectedItem();
 				if (port != null) {
-					portListener.setPortName(port);
+					if (ConfigFrame.EMPTY_PORT_NAME.equals(port)) {
+						portListener.setPortName(null);
+					} else {
+						portListener.setPortName(port);
+					}
 					Preferences.INSTANCE.setPort(port);
 				} else {
 					System.out.println("Port is null.");

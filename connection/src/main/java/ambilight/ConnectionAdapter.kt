@@ -1,6 +1,5 @@
 package ambilight
 
-import ambilight.gui.ConfigFrame
 import ambilight.serial.Connection
 import jssc.SerialPortException
 
@@ -10,8 +9,6 @@ import jssc.SerialPortException
 open class ConnectionAdapter : Connection, PortListener {
 
 	companion object {
-
-		private const val EMPTY_PORT_NAME = ConfigFrame.EMPTY_PORT_NAME
 
 		private val dummyListener: Connection = object : Connection {
 			override fun open(portName: String) {}
@@ -27,8 +24,8 @@ open class ConnectionAdapter : Connection, PortListener {
 		this.connection = connection
 	}
 
-	override fun setPortName(portName: String) {
-		if (this.port != portName && portName != EMPTY_PORT_NAME) {
+	override fun setPortName(portName: String?) {
+		if (this.port != portName && portName != null) {
 			close()
 			open(portName)
 		}

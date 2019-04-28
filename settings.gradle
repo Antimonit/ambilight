@@ -1,2 +1,2 @@
-include ":app", ":gui", ":connection", ":native"
+include ":core", ":app", ":gui", ":connection", ":native"
 
