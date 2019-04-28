@@ -1,4 +1,5 @@
-.gitignore
 .idea/
 Ambilight.iml
 /local.properties
+build
+out
