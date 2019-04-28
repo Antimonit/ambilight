@@ -304,15 +304,14 @@ public class ConfigFrame extends HideableFrame implements LoopingRunnable.Segmen
 	private void refreshPortNames() {
 		portNamesComboBox.removeAllItems();
 
-		String[] portNames = SerialPortList.getPortNames();
-		if (portNames.length == 0) {
+		List<String> portNames = Arrays.asList(SerialPortList.getPortNames());
+		if (portNames.size() == 0) {
 			portNamesComboBox.addItem(EMPTY_PORT_NAME);
 		}
-		System.out.println("Available ports:");
-		for (int i = 0; i < portNames.length; i++) {
-			String portName = portNames[i];
-			portNamesComboBox.insertItemAt(portName, i);
-			System.out.println(portName);
+
+		System.out.println("Available ports: "  + String.join(", ", portNames));
+		for (String portName : portNames) {
+			portNamesComboBox.addItem(portName);
 		}
 		portNamesComboBox.setSelectedItem(Preferences.INSTANCE.getPort());
 	}
