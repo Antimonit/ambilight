@@ -1,0 +1,12 @@
+
+// Name of the main file of your sketch
+def sketchMainFile = "src/main/arduino/ambilight_arduino.ino"
+
+// The microcontroller used
+def cpuName = "atmega328p"
+
+// Clock speed of the board
+def cpuClock = "16000000L"
+
+// This line will import the tasks defined on the arduino.gradle file. Don't remove it.
+apply from: 'arduino.gradle'
