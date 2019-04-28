@@ -1,5 +1,6 @@
 plugins {
     id "application"
+    id "osgi"
     id "org.jetbrains.kotlin.jvm" version "1.3.30"
 }
 
@@ -24,6 +25,18 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.4.2'
 }
 
+jar {
+    archiveFileName = "Ambilight.jar"
+    manifest {
+        instruction 'Bundle-NativeCode', 'lib/x64/helloworld.dll; osname=win32; processor=x86_64'
+        attributes 'Main-Class': 'ambilight.Main'
+    }
+    from {
+        (configurations.runtimeClasspath).collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
+}
 project(':native').afterEvaluate {
     Task copyLibraryTask = project(':native').copyLib(projectDir)
     run.dependsOn copyLibraryTask
