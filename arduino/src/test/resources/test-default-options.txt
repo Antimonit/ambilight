@@ -1,0 +1,5 @@
+-compile
+-logger=human
+-fqbn=null
+-ide-version=null
+-warnings=default

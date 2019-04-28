@@ -56,6 +56,7 @@ class Main private constructor() {
 		val cutOff = 30
 		val temperature = 4000
 
+		// TODO: instead of creating single listener, register multiple listeners
 		val colorUpdateListener = LoopingRunnable.SegmentColorsUpdateListener { segmentColors ->
 			window.updatedSegmentColors(segmentColors)
 			connection.sendColors(segmentColors)

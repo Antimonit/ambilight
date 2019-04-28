@@ -1,12 +1,70 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 
-// Name of the main file of your sketch
-def sketchMainFile = "src/main/arduino/ambilight_arduino.ino"
+plugins {
+    id 'idea'
+    id 'com.github.kt3k.coveralls' version '2.8.2'
+    id 'com.gradle.plugin-publish' version '0.10.0'
+    id 'groovy'
+    id 'jacoco'
+    // for local testing
+    id 'maven'
+}
 
-// The microcontroller used
-def cpuName = "atmega328p"
+group = 'com.github.antimonit'
 
-// Clock speed of the board
-def cpuClock = "16000000L"
+repositories {
+    mavenCentral()
+}
 
-// This line will import the tasks defined on the arduino.gradle file. Don't remove it.
-apply from: 'arduino.gradle'
+dependencies {
+    implementation gradleApi()
+    implementation localGroovy()
+    implementation 'commons-io:commons-io:2.+'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.+'
+    testRuntime 'org.junit.jupiter:junit-jupiter-engine:5.3.+'
+}
+
+//test {
+//    useJUnitPlatform()
+//    testLogging {
+//        events "passed", "skipped", "failed"
+//        exceptionFormat TestExceptionFormat.FULL
+//        showExceptions true
+//        showCauses true
+//        showStackTraces true
+//    }
+//}
+//
+//jacocoTestReport {
+//    reports {
+//        html.enabled = true
+//        xml.enabled = true
+//        csv.enabled = false
+//    }
+//}
+
+// The configuration example below shows the minimum required properties
+// configured to publish your plugin to the plugin portal
+pluginBundle {
+    website = 'https://github.com/antimonit'
+    vcsUrl = 'https://github.com/antimonit/gradle-arduino-plugin'
+    description = 'A gradle plugin for using Arduino IDE in the gradle projects'
+    tags = ['gradle', 'gradle-plugin', 'arduino', 'arduino-ide']
+
+    plugins {
+        arduinoPlugin {
+            id = 'com.github.antimonit.arduino'
+            displayName = 'Gradle Arduino IDE plugin'
+        }
+    }
+}
+
+// for local testing
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: uri('tmp-repo'))
+        }
+    }
+}

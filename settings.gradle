@@ -1,2 +1,2 @@
-include ":core", ":app", ":gui", ":connection", ":native", ":arduino"
+include ":core", ":app", ":gui", ":connection", ":native", ":arduino", ":arduino:sample"
 
