@@ -1,83 +1,35 @@
 package ambilight
 
+import kotlin.reflect.KMutableProperty0
+import kotlin.reflect.KProperty
+
 /**
  * Created by David Khol [david@khol.me] on 20. 7. 2017.
  */
-open class GuiListenerAdapter : GUIListener {
+open class GuiListenerAdapter(
+	listener: GUIListener,
+	private var isRunning: () -> Boolean
+) : GUIListener {
 
-	companion object {
-		private val dummyListener: GUIListener = object : GUIListener {
-			override fun setLivePreview(isLivePreview: Boolean) {}
-			override fun setRenderRate(renderRate: Long) {}
-			override fun setUpdateRate(updateRate: Long) {}
-			override fun setSmoothness(smoothness: Int) {}
-			override fun setSaturation(saturation: Double) {}
-			override fun setBrightness(brightness: Int) {}
-			override fun setCutOff(cutOff: Int) {}
-			override fun setTemperature(temperature: Int) {}
+	inner class Delegate<T>(private val prop: KMutableProperty0<T>) {
+
+		operator fun getValue(thisRef: Any, property: KProperty<*>): T {
+			return prop.get()
 		}
 
-		private val dummyPredicate: () -> Boolean = {
-			false
-		}
-	}
-
-
-	private var listener = dummyListener
-	private var isRunning: () -> Boolean = dummyPredicate
-
-
-	fun setGUIListener(listener: GUIListener?, runningPredicate: (() -> Boolean)?) {
-		this.isRunning = runningPredicate ?: dummyPredicate
-		this.listener = listener ?: dummyListener
-	}
-
-	override fun setLivePreview(isLivePreview: Boolean) {
-		if (isRunning()) {
-			listener.setLivePreview(isLivePreview)
+		operator fun setValue(thisRef: Any, property: KProperty<*>, value: T) {
+			if (isRunning()) {
+				prop.set(value)
+			}
 		}
 	}
 
-	override fun setRenderRate(renderRate: Long) {
-		if (isRunning()) {
-			listener.setRenderRate(renderRate)
-		}
-	}
-
-	override fun setUpdateRate(updateRate: Long) {
-		if (isRunning()) {
-			listener.setUpdateRate(updateRate)
-		}
-	}
-
-	override fun setSmoothness(smoothness: Int) {
-		if (isRunning()) {
-			listener.setSmoothness(smoothness)
-		}
-	}
-
-	override fun setSaturation(saturation: Double) {
-		if (isRunning()) {
-			listener.setSaturation(saturation)
-		}
-	}
-
-	override fun setBrightness(brightness: Int) {
-		if (isRunning()) {
-			listener.setBrightness(brightness)
-		}
-	}
-
-	override fun setCutOff(cutOff: Int) {
-		if (isRunning()) {
-			listener.setCutOff(cutOff)
-		}
-	}
-
-	override fun setTemperature(temperature: Int) {
-		if (isRunning()) {
-			listener.setTemperature(temperature)
-		}
-	}
-
+	override var isLivePreview by Delegate(listener::isLivePreview)
+	override var renderRate by Delegate(listener::renderRate)
+	override var updateRate by Delegate(listener::updateRate)
+	override var smoothness by Delegate(listener::smoothness)
+	override var saturation by Delegate(listener::saturation)
+	override var brightness by Delegate(listener::brightness)
+	override var cutOff by Delegate(listener::cutOff)
+	override var temperature by Delegate(listener::temperature)
 }

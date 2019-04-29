@@ -24,14 +24,11 @@ class Main private constructor() {
 	// Configuration of our LED system
 	private val config = LedConfig()
 
-	// Bridge between Ambilight implementation and GUI frame
-	private val guiListenerAdapter = GuiListenerAdapter()
-
 	// Bridge between Ambilight implementation and SerialConnection
 	private val connectionAdapter = ConnectionAdapter()
 
 	// GUI frame
-	private val window = ConfigFrame(config, guiListenerAdapter, connectionAdapter)
+	private val window = ConfigFrame(config, connectionAdapter)
 
 	// Setup ambilight
 	private val ambilight: Ambilight = AmbilightGdi(
@@ -52,7 +49,7 @@ class Main private constructor() {
 		val updateRate = 30L
 		val smoothness = 100
 		val saturation = 1.8
-		val brightness = 256
+		val brightness = 1f
 		val cutOff = 30
 		val temperature = 4000
 
@@ -65,7 +62,10 @@ class Main private constructor() {
 		val currentThread = Thread(currentRunnable)
 		currentThread.start()
 
+		// Bridge between Ambilight implementation and GUI frame
+		val guiListenerAdapter = GuiListenerAdapter(currentRunnable, currentThread::isAlive)
+
 		// connect looping runnable and GUI
-		guiListenerAdapter.setGUIListener(currentRunnable, currentThread::isAlive)
+		window.setGuiListener(guiListenerAdapter)
 	}
 }

@@ -40,7 +40,7 @@ public class ConfigFrame extends HideableFrame implements SegmentColorsUpdateLis
 	private JSlider temperatureSlider;
 
 	private final LedConfig config;
-	private final GUIListener guiListener;
+	private GUIListener guiListener;
 	private final PortListener portListener;
 
 
@@ -49,11 +49,10 @@ public class ConfigFrame extends HideableFrame implements SegmentColorsUpdateLis
 		previewPanel.setPreferredSize(new Dimension(320, 180));
 	}
 
-	public ConfigFrame(LedConfig config, GUIListener guiListener, PortListener portListener) {
+	public ConfigFrame(LedConfig config, PortListener portListener) {
 		super("Ambilight", "/icon-inner_border.png");
 
 		this.config = config;
-		this.guiListener = guiListener;
 		this.portListener = portListener;
 
 		// setup components
@@ -89,6 +88,10 @@ public class ConfigFrame extends HideableFrame implements SegmentColorsUpdateLis
 		resetLocation();
 		setResizable(false);
 		setVisible(true);
+	}
+
+	public void setGuiListener(@NotNull GUIListener guiListener) {
+		this.guiListener = guiListener;
 	}
 
 	private void setupMinimizeButton() {
@@ -267,7 +270,7 @@ public class ConfigFrame extends HideableFrame implements SegmentColorsUpdateLis
 
 		brightnessSlider.addChangeListener(e -> {
 			int brightness = brightnessSlider.getValue();
-			guiListener.setBrightness(brightness);
+			guiListener.setBrightness(brightness / 256f);
 		});
 	}
 
