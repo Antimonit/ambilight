@@ -1,8 +1,6 @@
-package ambilight.gui;
+package ambilight;
 
-import ambilight.GUIListener;
-import ambilight.Ambilight;
-import ambilight.LedConfig;
+import ambilight.gui.SegmentColorsUpdateListener;
 
 /**
  * Created by David Khol [david@khol.me] on 20. 7. 2017.
@@ -241,10 +239,4 @@ public class LoopingRunnable implements Runnable, GUIListener {
 			segmentColors[ledNum][2] = (byte) (((segmentColors[ledNum][2] & 0xFF) * fade + (targetSegmentColors[ledNum][2] & 0xFF) * fadeInv) / MAX_FADE);
 		}
 	}
-
-	public interface SegmentColorsUpdateListener {
-
-		void updatedSegmentColors(byte[][] segmentColors);
-	}
 }
-

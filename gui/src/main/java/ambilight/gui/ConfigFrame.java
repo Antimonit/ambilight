@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 
-public class ConfigFrame extends HideableFrame implements LoopingRunnable.SegmentColorsUpdateListener {
+public class ConfigFrame extends HideableFrame implements SegmentColorsUpdateListener {
 
 	private static final String EMPTY_PORT_NAME = "- no port available -";
 

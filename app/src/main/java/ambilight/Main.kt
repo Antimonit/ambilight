@@ -1,7 +1,7 @@
 package ambilight
 
 import ambilight.gui.ConfigFrame
-import ambilight.gui.LoopingRunnable
+import ambilight.gui.SegmentColorsUpdateListener
 import ambilight.serial.Connection
 import ambilight.serial.SerialConnection
 import javax.swing.SwingUtilities
@@ -56,7 +56,7 @@ class Main private constructor() {
 		val cutOff = 30
 		val temperature = 4000
 
-		val colorUpdateListener = LoopingRunnable.SegmentColorsUpdateListener { segmentColors ->
+		val colorUpdateListener = SegmentColorsUpdateListener { segmentColors ->
 			window.updatedSegmentColors(segmentColors)
 			connection.sendColors(segmentColors)
 		}
