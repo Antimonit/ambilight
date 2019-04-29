@@ -62,10 +62,7 @@ class Main private constructor() {
 		val currentThread = Thread(currentRunnable)
 		currentThread.start()
 
-		// Bridge between Ambilight implementation and GUI frame
-		val guiListenerAdapter = GuiListenerAdapter(currentRunnable, currentThread::isAlive)
-
 		// connect looping runnable and GUI
-		window.setGuiListener(guiListenerAdapter)
+		window.setGuiListener(currentRunnable)
 	}
 }
