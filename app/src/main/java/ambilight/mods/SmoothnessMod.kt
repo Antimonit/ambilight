@@ -1,22 +1,14 @@
 package ambilight.mods
 
 import ambilight.LedColor
-import kotlin.reflect.KProperty
 
-class SmoothnessMod(ledCount: Int, private var smoothness: Int) : Mod(ledCount) {
+class SmoothnessMod(private val ledCount: Int, var smoothness: Int) : Mod {
 
 	companion object {
 		private const val MAX_FADE = 256
 	}
 
-	operator fun getValue(thisRef: Any?, property: KProperty<*>): Int = smoothness
-	operator fun setValue(thisRef: Any?, property: KProperty<*>, value: Int) {
-		smoothness = value
-	}
-
 	private val smoothColors: Array<LedColor> = Array(ledCount) { LedColor(0f, 0f, 0f) }
-
-	override fun isUseful() = smoothness != 0
 
 	override fun update(colors: Array<LedColor>): Array<LedColor> {
 		if (smoothness == 0)

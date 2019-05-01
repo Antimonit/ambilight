@@ -1,14 +1,8 @@
 package ambilight.mods
 
 import ambilight.LedColor
-import kotlin.reflect.KProperty
 
-class CutOffMod(ledCount: Int, private var cutOff: Int) : Mod(ledCount) {
-
-	operator fun getValue(thisRef: Any?, property: KProperty<*>): Int = cutOff
-	operator fun setValue(thisRef: Any?, property: KProperty<*>, value: Int) {
-		cutOff = value
-	}
+class CutOffMod(var cutOff: Int) : DiscreteMod() {
 
 	override fun isUseful() = cutOff != 0
 

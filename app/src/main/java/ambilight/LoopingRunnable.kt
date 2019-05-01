@@ -23,10 +23,10 @@ class LoopingRunnable(
 	private var lastRenderTime: Long = currentTime
 
 	private val smoothnessMod = SmoothnessMod(config.ledCount, 100)
-	private val saturationMod = SaturationMod(config.ledCount, 1.8f)
-	private val brightnessMod = BrightnessMod(config.ledCount, 1f)
-	private val cutOffMod = CutOffMod(config.ledCount, 30)
-	private val temperatureMod = TemperatureMod(config.ledCount, 4000)
+	private val saturationMod = SaturationMod(1.8f)
+	private val brightnessMod = BrightnessMod(1f)
+	private val cutOffMod = CutOffMod(30)
+	private val temperatureMod = TemperatureMod(4000)
 
 	private val renderMods: List<Mod> = listOf(
 		saturationMod,

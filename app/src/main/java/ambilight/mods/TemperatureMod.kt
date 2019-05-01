@@ -3,17 +3,11 @@ package ambilight.mods
 import ambilight.LedColor
 import kotlin.math.ln
 import kotlin.math.pow
-import kotlin.reflect.KProperty
 
 /**
  * http://www.tannerhelland.com/4435/convert-temperature-rgb-algorithm-code/
  */
-class TemperatureMod(ledCount: Int, private var temperature: Int) : Mod(ledCount) {
-
-	operator fun getValue(thisRef: Any?, property: KProperty<*>): Int = temperature
-	operator fun setValue(thisRef: Any?, property: KProperty<*>, value: Int) {
-		temperature = value
-	}
+class TemperatureMod(var temperature: Int) : DiscreteMod() {
 
 	override fun update(led: LedColor) {
 		val temperature = temperature / 100f

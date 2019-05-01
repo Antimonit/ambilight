@@ -2,9 +2,8 @@ package ambilight.mods
 
 import ambilight.LedColor
 import kotlin.math.sqrt
-import kotlin.reflect.KProperty
 
-class SaturationMod(ledCount: Int, private var saturation: Float) : Mod(ledCount) {
+class SaturationMod(var saturation: Float) : DiscreteMod() {
 
 	companion object {
 
@@ -13,17 +12,9 @@ class SaturationMod(ledCount: Int, private var saturation: Float) : Mod(ledCount
 		private const val Pb: Float = 0.114f
 	}
 
-	operator fun getValue(thisRef: Any?, property: KProperty<*>): Float = saturation
-	operator fun setValue(thisRef: Any?, property: KProperty<*>, value: Float) {
-		saturation = value
-	}
-
 	override fun isUseful() = saturation != 1f
 
 	override fun update(led: LedColor) {
-		if (saturation == 1f)
-			return
-
 		val (R, G, B) = led
 		val P = sqrt(R * R * Pr + G * G * Pg + B * B * Pb)
 
