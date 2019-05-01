@@ -5,12 +5,12 @@ package ambilight
  */
 interface GUIListener {
 
-	var isLivePreview: Boolean
-	var renderRate: Long
-	var updateRate: Long
-	var smoothness: Int
-	var saturation: Float
-	var brightness: Float
-	var cutOff: Int
-	var temperature: Int
+	fun setLivePreview(isLivePreview: Boolean)
+	fun setRenderRate(renderRate: Long)
+	fun setUpdateRate(updateRate: Long)
+	fun setSmoothness(smoothness: Int)
+	fun setSaturation(saturation: Float)
+	fun setBrightness(brightness: Float)
+	fun setCutOff(cutOff: Int)
+	fun setTemperature(temperature: Int)
 }

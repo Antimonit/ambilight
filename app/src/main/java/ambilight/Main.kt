@@ -45,7 +45,7 @@ class Main private constructor() {
 		connectionAdapter.open(Preferences.port)
 
 		// create a thread that repeatedly takes screenshots and returns colors back via a listener
-		val currentRunnable = LoopingRunnable(ambilight, config, SegmentColorsUpdateListener { colors ->
+		val currentRunnable = LoopingRunnable(config, ambilight, SegmentColorsUpdateListener { colors ->
 			window.updatedSegmentColors(colors)
 			connection.sendColors(colors)
 		})

@@ -8,11 +8,14 @@ import ambilight.mods.*
  */
 @ExperimentalUnsignedTypes
 class LoopingRunnable(
+	config: LedConfig,
 	private val ambilight: Ambilight,
-	private val config: LedConfig,
 	private val listener: SegmentColorsUpdateListener
 ) : Runnable, GUIListener {
 
+	private var renderRate: Long = 10L
+	private var updateRate: Long = 30L
+	private var isLivePreview: Boolean = true
 	private var currentTime: Long = System.currentTimeMillis()
 	private val renderTime: Long get() = 1000 / renderRate
 	private val updateTime: Long get() = 1000 / updateRate
@@ -34,16 +37,6 @@ class LoopingRunnable(
 	private val updateMods: List<Mod> = listOf(
 		smoothnessMod
 	)
-
-	override var renderRate: Long = 10L
-	override var updateRate: Long = 30L
-	override var smoothness: Int by smoothnessMod
-	override var saturation: Float by saturationMod
-	override var brightness: Float by brightnessMod
-	override var cutOff: Int by cutOffMod
-	override var temperature: Int by temperatureMod
-
-	override var isLivePreview: Boolean = true
 
 	private var targetSegmentColors: Array<LedColor> = Array(config.ledCount) { LedColor(0f, 0f, 0f) }
 
@@ -95,5 +88,37 @@ class LoopingRunnable(
 		sendColors(updateMods.fold(targetSegmentColors) { colors, mod ->
 			mod.update(colors)
 		})
+	}
+
+	override fun setLivePreview(isLivePreview: Boolean) {
+		this.isLivePreview = isLivePreview
+	}
+
+	override fun setRenderRate(renderRate: Long) {
+		this.renderRate = renderRate
+	}
+
+	override fun setUpdateRate(updateRate: Long) {
+		this.updateRate = updateRate
+	}
+
+	override fun setSmoothness(smoothness: Int) {
+		smoothnessMod.smoothness = smoothness
+	}
+
+	override fun setSaturation(saturation: Float) {
+		saturationMod.saturation = saturation
+	}
+
+	override fun setBrightness(brightness: Float) {
+		brightnessMod.brightness = brightness
+	}
+
+	override fun setCutOff(cutOff: Int) {
+		cutOffMod.cutOff = cutOff
+	}
+
+	override fun setTemperature(temperature: Int) {
+		temperatureMod.temperature = temperature
 	}
 }
