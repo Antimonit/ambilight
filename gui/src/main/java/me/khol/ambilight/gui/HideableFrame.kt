@@ -102,14 +102,14 @@ open class HideableFrame(title: String, iconPath: String) : JFrame(title) {
 
 
 	protected fun showFrame() {
-		extendedState = JFrame.NORMAL
+		extendedState = NORMAL
 		isVisible = true
 		toFront()
 //		requestFocus();
 	}
 
 	protected fun hideFrame() {
-		extendedState = JFrame.ICONIFIED
+		extendedState = ICONIFIED
 		isVisible = false
 	}
 
