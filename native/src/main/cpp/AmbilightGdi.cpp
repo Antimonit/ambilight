@@ -282,7 +282,7 @@ extern "C" jint JNI_OnLoad(JavaVM* vm, void* reserved) {
 		return -1;
 	}
 
-	jclass clazz = env->FindClass("ambilight/AmbilightGdi");
+	jclass clazz = env->FindClass("me/khol/ambilight/AmbilightGdi");
 	if (clazz) {
 		env->RegisterNatives(clazz, method_table, sizeof(method_table) / sizeof(method_table[0]));
 		env->DeleteLocalRef(clazz);
