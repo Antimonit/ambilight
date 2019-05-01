@@ -8,17 +8,8 @@ import jssc.SerialPortException
  */
 open class ConnectionAdapter : Connection, PortListener {
 
-	companion object {
-
-		private val dummyListener: Connection = object : Connection {
-			override fun open(portName: String) {}
-			override fun sendColors(segmentColors: Array<ByteArray>) {}
-			override fun close() {}
-		}
-	}
-
-	private var connection: Connection = dummyListener
-	private var port: String = ""
+	private var connection: Connection? = null
+	private var port: String? = null
 
 	fun setSerialConnection(connection: Connection) {
 		this.connection = connection
@@ -33,7 +24,7 @@ open class ConnectionAdapter : Connection, PortListener {
 
 	override fun open(portName: String) {
 		try {
-			connection.open(portName)
+			connection?.open(portName)
 			port = portName
 		} catch (e: SerialPortException) {
 			println("Exception port " + e.portName +
@@ -44,8 +35,8 @@ open class ConnectionAdapter : Connection, PortListener {
 
 	override fun close() {
 		try {
-			connection.close()
-			port = ""
+			connection?.close()
+			port = null
 		} catch (e: SerialPortException) {
 			println("Exception port " + e.portName +
 					": " + e.exceptionType +
@@ -54,8 +45,8 @@ open class ConnectionAdapter : Connection, PortListener {
 	}
 
 	override fun sendColors(segmentColors: Array<ByteArray>) {
-		if (port != "") {
-			connection.sendColors(segmentColors)
+		if (port != null) {
+			connection?.sendColors(segmentColors)
 		}
 	}
 }
