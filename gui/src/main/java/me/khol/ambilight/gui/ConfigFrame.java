@@ -100,8 +100,7 @@ public class ConfigFrame extends HideableFrame implements SegmentColorsUpdateLis
 	}
 
 	private void setupMinimizeButton() {
-		String minimizeIconPath = "/ic_minimize_32.png";
-		ImageIcon minimizeIcon = new ImageIcon(this.getClass().getResource(minimizeIconPath));
+		ImageIcon minimizeIcon = new ImageIcon(Icon.MINIMIZE.getUrl());
 
 		setupBorderlessButton(minimizeButton, minimizeIcon);
 
@@ -109,8 +108,7 @@ public class ConfigFrame extends HideableFrame implements SegmentColorsUpdateLis
 	}
 
 	private void setupCloseButton() {
-		String closeIconPath = "/ic_close_32.png";
-		ImageIcon closeIcon = new ImageIcon(this.getClass().getResource(closeIconPath));
+		ImageIcon closeIcon = new ImageIcon(Icon.CLOSE.getUrl());
 
 		setupBorderlessButton(closeButton, closeIcon);
 
@@ -118,11 +116,8 @@ public class ConfigFrame extends HideableFrame implements SegmentColorsUpdateLis
 	}
 
 	private void setupPinButton() {
-		String pinEnabledIconPath = "/ic_pin_enabled_32.png";
-		String pinDisabledIconPath = "/ic_pin_disabled_32.png";
-
-		ImageIcon pinEnabledIcon = new ImageIcon(this.getClass().getResource(pinEnabledIconPath));
-		ImageIcon pinDisabledIcon = new ImageIcon(this.getClass().getResource(pinDisabledIconPath));
+		ImageIcon pinEnabledIcon = new ImageIcon(Icon.PIN_ENABLED.getUrl());
+		ImageIcon pinDisabledIcon = new ImageIcon(Icon.PIN_DISABLED.getUrl());
 
 		setupBorderlessButton(pinButton, pinDisabledIcon);
 
@@ -142,11 +137,8 @@ public class ConfigFrame extends HideableFrame implements SegmentColorsUpdateLis
 	}
 
 	private void setupLivePreviewButton() {
-		String playIconPath = "/ic_play_32.png";
-		String pauseIconPath = "/ic_pause_32.png";
-
-		ImageIcon playIcon = new ImageIcon(this.getClass().getResource(playIconPath));
-		ImageIcon pauseIcon = new ImageIcon(this.getClass().getResource(pauseIconPath));
+		ImageIcon playIcon = new ImageIcon(Icon.PLAY.getUrl());
+		ImageIcon pauseIcon = new ImageIcon(Icon.PAUSE.getUrl());
 
 		setupBorderlessButton(livePreviewButton, pauseIcon);
 
@@ -207,8 +199,7 @@ public class ConfigFrame extends HideableFrame implements SegmentColorsUpdateLis
 	}
 
 	private void setupPortRefreshButton() {
-		String refreshIconPath = "/ic_refresh_24.png";
-		ImageIcon refreshIcon = new ImageIcon(this.getClass().getResource(refreshIconPath));
+		ImageIcon refreshIcon = new ImageIcon(Icon.REFRESH.getUrl());
 
 		portRefreshButton.setIcon(refreshIcon);
 		portRefreshButton.setText(null);
