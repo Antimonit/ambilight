@@ -326,7 +326,9 @@ public class ConfigFrame extends HideableFrame implements SegmentColorsUpdateLis
 
 	@Override
 	public void updatedSegmentColors(@NotNull byte[][] segmentColors) {
-		previewPanel.setColors(segmentColors);
+		if (isVisible()) {
+			previewPanel.setColors(segmentColors);
+		}
 	}
 
 	/**
