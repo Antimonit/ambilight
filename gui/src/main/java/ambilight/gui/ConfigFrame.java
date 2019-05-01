@@ -254,7 +254,7 @@ public class ConfigFrame extends HideableFrame implements SegmentColorsUpdateLis
 		saturationSlider.setLabelTable(labelTable);
 
 		saturationSlider.addChangeListener(e -> {
-			double saturation = (double) saturationSlider.getValue() / 10.0;
+			float saturation = (float) saturationSlider.getValue() / 10.0f;
 			guiListener.setSaturation(saturation);
 		});
 	}

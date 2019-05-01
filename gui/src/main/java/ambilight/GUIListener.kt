@@ -9,7 +9,7 @@ interface GUIListener {
 	var renderRate: Long
 	var updateRate: Long
 	var smoothness: Int
-	var saturation: Double
+	var saturation: Float
 	var brightness: Float
 	var cutOff: Int
 	var temperature: Int
