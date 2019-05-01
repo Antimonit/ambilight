@@ -52,7 +52,7 @@ class LoopingRunnable(
 		}.toTypedArray())
 	}
 
-	override fun run() {
+	override fun run(): Nothing {
 		while (true) {
 			if (currentTime - lastRenderTime >= renderTime) {
 				if (isLivePreview) {
