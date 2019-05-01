@@ -38,7 +38,7 @@ class LoopingRunnable(
 		smoothnessMod
 	)
 
-	private var targetSegmentColors: Array<LedColor> = Array(config.ledCount) { LedColor(0f, 0f, 0f) }
+	private var targetSegmentColors: Array<LedColor> = Array(config.ledCount) { LedColor() }
 
 	private fun retrieveColors(): Array<LedColor> {
 		return ambilight.getScreenSegmentsColors().map {
