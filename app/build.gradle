@@ -24,6 +24,53 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.4.2'
 }
 
+boolean isZipFile(File file) throws IOException {
+    if (file.isDirectory()) {
+        return false
+    }
+    if (!file.canRead()) {
+        throw new IOException("Cannot read file "+file.getAbsolutePath())
+    }
+    if (file.length() < 4) {
+        return false
+    }
+    DataInputStream inn = new DataInputStream(new BufferedInputStream(new FileInputStream(file)))
+    int test = inn.readInt()
+    inn.close()
+    return test == 0x504b0304
+}
+
+jar {
+    archiveFileName = "Ambilight.jar"
+    manifest {
+        attributes 'Main-Class': 'ambilight.Main'
+    }
+    from {
+        (configurations.runtimeClasspath).collect {
+            it.isDirectory() || !isZipFile(it) ? it : zipTree(it)
+        }
+    }
+}
+
+//distZip {
+//    archiveFileName = "Ambilight-bin.zip"
+//}
+//
+//distributions {
+//    main {
+//        baseName = "Ambilight"
+////        version = ""
+////        contents {
+////            from('.') {
+////                include '*.dll'
+////                into "bin"
+////            }
+////        }
+//    }
+//}
+
+//run.dependsOn project(':gdi').copyLib(projectDir)
+
 project(':native').afterEvaluate {
     Task copyLibraryTask = project(':native').copyLib(projectDir)
     run.dependsOn copyLibraryTask

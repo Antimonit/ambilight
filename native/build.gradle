@@ -10,7 +10,7 @@ library {
 
     binaries.whenElementFinalized { binary ->
         binary.compileTask.get().configure {
-            outputs.files.forEach { println "outputs.files: $it" }
+//            outputs.files.forEach { println "outputs.files: $it" }
             File javaHome = Jvm.current().javaHome
             compilerArgs.addAll([
                     "-I" + "$javaHome/include",
