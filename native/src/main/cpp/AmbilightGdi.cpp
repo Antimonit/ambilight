@@ -95,8 +95,6 @@ namespace ambilight_gdi {
 	static const int SAMPLE_COUNT_Y = 32;
 	static const int SAMPLE_COUNT = SAMPLE_COUNT_X * SAMPLE_COUNT_Y;
 	int** pixelOffset;
-	//int** pixelOffsetX;
-	//int** pixelOffsetY;
 
 	int ledCount;
 
@@ -117,7 +115,7 @@ namespace ambilight_gdi {
 		return retVal;
 	}
 
-	BYTE* ScreenData = 0;
+	BYTE* ScreenData = NULL;
 
 	inline int PosB(int x, int y) {
 		return ScreenData[4 * ((y * width) + x)];
@@ -157,10 +155,6 @@ namespace ambilight_gdi {
 		bmi.biHeight = -height;
 		bmi.biCompression = BI_RGB;
 		bmi.biSizeImage = 0;// 3 * ScreenX * ScreenY;
-
-		if (ScreenData)
-			free(ScreenData);
-		ScreenData = (BYTE*) malloc(4 * width * height);
 
 		GetDIBits(hDC, hBitmap, 0, height, ScreenData, (BITMAPINFO*)&bmi, DIB_RGB_COLORS);
 
@@ -216,6 +210,7 @@ namespace ambilight_gdi {
 		}
 
 		PrepareBounds();
+		ScreenData = new BYTE[4 * width * height];
 
 		float range, step, start;
 		int *x = new int[SAMPLE_COUNT_X];
@@ -244,20 +239,14 @@ namespace ambilight_gdi {
 				y[row] = (int) (start + step * (float) row);
 			}
 
-
 			pixelOffset[i] = new int[SAMPLE_COUNT];
-	//		pixelOffsetX[i] = new int[SAMPLE_COUNT];
-	//		pixelOffsetY[i] = new int[SAMPLE_COUNT];
 			// Get offset to each pixel within full screen capture
 			for (int row = 0; row < SAMPLE_COUNT_Y; row++) {
 				for (int col = 0; col < SAMPLE_COUNT_X; col++) {
 					pixelOffset[i][row * SAMPLE_COUNT_X + col] = y[row] * width + x[col];
-	//				pixelOffsetX[i][row * SAMPLE_COUNT_X + col] = x[col];
-	//				pixelOffsetY[i][row * SAMPLE_COUNT_X + col] = y[row];
 				}
 			}
 		}
-
 
 		delete[] x;
 		delete[] y;
