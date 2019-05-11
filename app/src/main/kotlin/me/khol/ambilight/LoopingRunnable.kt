@@ -2,6 +2,7 @@ package me.khol.ambilight
 
 import me.khol.ambilight.gui.SegmentColorsUpdateListener
 import me.khol.ambilight.mods.*
+import kotlin.math.min
 
 /**
  * Created by David Khol [david@khol.me] on 20. 7. 2017.
@@ -67,14 +68,15 @@ class LoopingRunnable(
 			}
 
 			currentTime = System.currentTimeMillis()
-			while (currentTime - lastRenderTime < renderTime && currentTime - lastUpdateTime < updateTime) {
-				try {
-					Thread.sleep(1)
-				} catch (ignored: InterruptedException) {
-				}
 
-				currentTime = System.currentTimeMillis()
-			}
+			val nextRender = renderTime + lastRenderTime - currentTime
+			val nextUpdate = updateTime + lastUpdateTime - currentTime
+
+			Thread.sleep(if (renderTime < updateTime) {
+				nextUpdate
+			} else {
+				min(nextRender, nextUpdate)
+			}.coerceAtLeast(0))
 		}
 	}
 
