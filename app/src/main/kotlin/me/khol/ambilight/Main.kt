@@ -2,7 +2,6 @@
 package me.khol.ambilight
 
 import me.khol.ambilight.gui.ConfigFrame
-import me.khol.ambilight.gui.SegmentColorsUpdateListener
 import me.khol.ambilight.serial.Connection
 import me.khol.ambilight.serial.SerialConnection
 import javax.swing.SwingUtilities
@@ -27,11 +26,7 @@ fun start() {
 	val window = ConfigFrame(config, connectionAdapter)
 
 	// Setup ambilight
-	val ambilight: Ambilight = AmbilightGdi(
-		config.ledsWidth,
-		config.ledsHeight,
-		config.leds
-	)
+	val ambilight: Ambilight = AmbilightPreview(config)
 
 	// Serial connection that communicates with Arduino
 	val connection: Connection = SerialConnection(config.ledCount)
@@ -40,10 +35,10 @@ fun start() {
 	connectionAdapter.open(Preferences.port)
 
 	// create a thread that repeatedly takes screenshots and returns colors back via a listener
-	val currentRunnable = LoopingRunnable(config, ambilight, SegmentColorsUpdateListener { colors ->
+	val currentRunnable = LoopingRunnable(config, ambilight) { colors ->
 		window.updatedSegmentColors(colors)
 		connection.sendColors(colors)
-	})
+	}
 	val currentThread = Thread(currentRunnable)
 	currentThread.start()
 

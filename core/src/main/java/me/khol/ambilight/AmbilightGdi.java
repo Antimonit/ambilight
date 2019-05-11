@@ -29,8 +29,8 @@ public class AmbilightGdi extends Ambilight {
 		System.loadLibrary("nativeGdi");
 	}
 
-	public AmbilightGdi(int ledsWidth, int ledsHeight, int[][] leds) {
-		nativeInit(ledsWidth, ledsHeight, leds);
+	public AmbilightGdi(LedConfig config) {
+		nativeInit(config.getLedsWidth(), config.getLedsHeight(), config.getLedArray());
 	}
 
 	@NotNull

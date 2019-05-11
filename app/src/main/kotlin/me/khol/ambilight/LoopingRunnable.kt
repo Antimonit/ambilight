@@ -1,6 +1,5 @@
 package me.khol.ambilight
 
-import me.khol.ambilight.gui.SegmentColorsUpdateListener
 import me.khol.ambilight.mods.*
 import kotlin.math.min
 
@@ -11,7 +10,7 @@ import kotlin.math.min
 class LoopingRunnable(
 	config: LedConfig,
 	private val ambilight: Ambilight,
-	private val listener: SegmentColorsUpdateListener
+	private val listener: (Array<ByteArray>) -> Unit
 ) : Runnable, GUIListener {
 
 	private var renderRate: Long = 10L
@@ -48,7 +47,7 @@ class LoopingRunnable(
 	}
 
 	private fun sendColors(colors: Array<LedColor>) {
-		listener.updatedSegmentColors(colors.map {
+		listener(colors.map {
 			byteArrayOf(it.r.toByte(), it.g.toByte(), it.b.toByte())
 		}.toTypedArray())
 	}

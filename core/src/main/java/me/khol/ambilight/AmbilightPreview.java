@@ -34,9 +34,9 @@ public class AmbilightPreview extends Ambilight {
 	@Override
 	public byte[][] getScreenSegmentsColors() {
 		for (int i = 0; i < config.getLedCount(); i++) {
-			int[] led = config.getLed(i);
-			int ledX = led[0];
-			int ledY = led[1];
+			Led led = config.get(i);
+			int ledX = led.getX();
+			int ledY = led.getY();
 
 			int r = 0, g = 0, b = 0;
 			for (Light light : lights) {

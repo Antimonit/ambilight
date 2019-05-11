@@ -7,7 +7,7 @@ import java.awt.*
 
 class PreviewPanel(private val config: LedConfig) : JPanel() {
 
-	private var colors: List<Color> = emptyList()
+	private var colors: List<Color> = List(config.ledCount) { Color.BLACK }
 
 	fun setColors(segmentColors: Array<ByteArray>) {
 		colors = segmentColors.map { color: ByteArray ->
@@ -24,9 +24,8 @@ class PreviewPanel(private val config: LedConfig) : JPanel() {
 		super.paintComponent(g)
 		val g2d = g as Graphics2D
 
-		colors.forEachIndexed { index, color ->
-			val (posX, posY) = config.getLed(index)
-			drawRect(g2d, color, posX, posY)
+		config.forEachIndexed { index, (x, y) ->
+			drawRect(g2d, colors[index], x, y)
 		}
 	}
 
