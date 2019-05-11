@@ -16,7 +16,7 @@ dependencies {
     implementation project(":connection")
     implementation project(":gui")
 
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib"
 
     testImplementation 'io.mockk:mockk:1.9.3'
     testImplementation 'org.assertj:assertj-core:3.11.1'

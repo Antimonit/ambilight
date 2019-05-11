@@ -6,7 +6,7 @@ plugins {
 dependencies {
     implementation project(":core")
 
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib"
     implementation 'org.scream3r:jssc:2.8.0'
     implementation 'com.intellij:forms_rt:7.0.3'
 

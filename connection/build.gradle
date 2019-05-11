@@ -8,7 +8,7 @@ sourceCompatibility = 1.8
 dependencies {
     implementation project(":core")
 
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib"
     implementation 'com.github.kurbatov:firmata4j:2.3.2'
 
     testImplementation 'junit:junit:4.12'
