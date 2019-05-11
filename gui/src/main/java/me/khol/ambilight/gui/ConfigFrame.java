@@ -7,6 +7,7 @@ import com.intellij.uiDesigner.core.Spacer;
 import org.jetbrains.annotations.NotNull;
 
 import me.khol.ambilight.GUIListener;
+import me.khol.ambilight.LedColor;
 import me.khol.ambilight.LedConfig;
 import me.khol.ambilight.PortListener;
 import me.khol.ambilight.Preferences;
@@ -316,7 +317,7 @@ public class ConfigFrame extends HideableFrame implements SegmentColorsUpdateLis
 	}
 
 	@Override
-	public void updatedSegmentColors(@NotNull byte[][] segmentColors) {
+	public void updatedSegmentColors(@NotNull LedColor[] segmentColors) {
 		if (isVisible()) {
 			previewPanel.setColors(segmentColors);
 		}

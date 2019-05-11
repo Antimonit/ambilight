@@ -2,7 +2,7 @@ package me.khol.ambilight
 
 abstract class Ambilight {
 
-	abstract fun getScreenSegmentsColors(): Array<ByteArray>
+	abstract fun getScreenSegmentsColors(): Array<LedColor>
 
 	fun benchmarkOnce() {
 		val start = System.currentTimeMillis()

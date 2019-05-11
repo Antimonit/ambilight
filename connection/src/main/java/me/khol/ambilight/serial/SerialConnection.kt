@@ -1,6 +1,7 @@
 package me.khol.ambilight.serial
 
 import jssc.*
+import me.khol.ambilight.LedColor
 
 class SerialConnection(private val ledCount: Int) : Connection, AutoCloseable {
 
@@ -44,7 +45,7 @@ class SerialConnection(private val ledCount: Int) : Connection, AutoCloseable {
 		println("Opened port $portName")
 	}
 
-	override fun sendColors(segmentColors: Array<ByteArray>) {
+	override fun sendColors(segmentColors: Array<LedColor>) {
 		val port = port ?: return
 		if (!arduinoReadyToRead || !port.isOpened) {
 			return
@@ -54,9 +55,9 @@ class SerialConnection(private val ledCount: Int) : Connection, AutoCloseable {
 		var dataIndex = 2
 		for (i in 0 until ledCount) {
 			val bytes = segmentColors[i]
-			serialData[dataIndex++] = bytes[0]
-			serialData[dataIndex++] = bytes[1]
-			serialData[dataIndex++] = bytes[2]
+			serialData[dataIndex++] = bytes.r.toByte()
+			serialData[dataIndex++] = bytes.g.toByte()
+			serialData[dataIndex++] = bytes.b.toByte()
 		}
 
 		arduinoReadyToRead = false

@@ -26,7 +26,7 @@ fun start() {
 	val window = ConfigFrame(config, connectionAdapter)
 
 	// Setup ambilight
-	val ambilight: Ambilight = AmbilightPreview(config)
+	val ambilight: Ambilight = AmbilightGdi(config)
 
 	// Serial connection that communicates with Arduino
 	val connection: Connection = SerialConnection(config.ledCount)
@@ -35,7 +35,7 @@ fun start() {
 	connectionAdapter.open(Preferences.port)
 
 	// create a thread that repeatedly takes screenshots and returns colors back via a listener
-	val currentRunnable = LoopingRunnable(config, ambilight) { colors ->
+	val currentRunnable = LoopingRunnable(config, ambilight::getScreenSegmentsColors) { colors ->
 		window.updatedSegmentColors(colors)
 		connection.sendColors(colors)
 	}

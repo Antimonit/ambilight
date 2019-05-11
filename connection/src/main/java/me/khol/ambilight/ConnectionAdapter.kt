@@ -44,7 +44,7 @@ open class ConnectionAdapter : Connection, PortListener {
 		}
 	}
 
-	override fun sendColors(segmentColors: Array<ByteArray>) {
+	override fun sendColors(segmentColors: Array<LedColor>) {
 		if (port != null) {
 			connection?.sendColors(segmentColors)
 		}

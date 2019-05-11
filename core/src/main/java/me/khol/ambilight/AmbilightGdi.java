@@ -35,8 +35,14 @@ public class AmbilightGdi extends Ambilight {
 
 	@NotNull
 	@Override
-	public byte[][] getScreenSegmentsColors() {
-		return nativeGetScreenSegmentsColorBytes();
+	public LedColor[] getScreenSegmentsColors() {
+		byte[][] bytes = nativeGetScreenSegmentsColorBytes();
+		LedColor[] ledColors = new LedColor[bytes.length];
+		for (int i = 0; i < bytes.length; i++) {
+			byte[] colors = bytes[i];
+			ledColors[i] = new LedColor(colors[0] & 0xFF, colors[1] & 0xFF, colors[2] & 0xFF);
+		}
+		return ledColors;
 	}
 
 	public void saveScreenshotToClipboard() {

@@ -5,6 +5,8 @@ import org.jetbrains.annotations.NotNull;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
+import java.util.Arrays;
+
 
 /**
  * This implementation performs all the computation in Java. It works, but the performance is rather
@@ -23,8 +25,8 @@ public class AmbilightJava extends Ambilight {
 	private static final int SAMPLE_COUNT = SAMPLE_COUNT_X * SAMPLE_COUNT_Y;	// shouldn't be over 256
 
 	private int[][] leds;
-	private byte[][] ledColor;
-	private byte[][] ledColorOld;
+	private LedColor[] ledColor;
+	private LedColor[] ledColorOld;
 
 	private int[][] pixelOffset;
 
@@ -36,8 +38,10 @@ public class AmbilightJava extends Ambilight {
 		this.leds = leds;
 
 		pixelOffset = new int[leds.length][SAMPLE_COUNT];
-		ledColor    = new byte[leds.length][3];
-		ledColorOld = new byte[leds.length][3];
+		ledColor    = new LedColor[leds.length];
+		ledColorOld = new LedColor[leds.length];
+		Arrays.setAll(ledColor, value -> new LedColor());
+		Arrays.setAll(ledColorOld, value -> new LedColor());
 
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		GraphicsDevice gd = ge.getScreenDevices()[0];
@@ -86,7 +90,7 @@ public class AmbilightJava extends Ambilight {
 
 	@NotNull
 	@Override
-	public byte[][] getScreenSegmentsColors() {
+	public LedColor[] getScreenSegmentsColors() {
 		BufferedImage screenshot = robot.createScreenCapture(dispBounds);
 
 		int[] data = ((DataBufferInt) screenshot.getRaster().getDataBuffer()).getData();
@@ -104,13 +108,13 @@ public class AmbilightJava extends Ambilight {
 			}
 
 			if (ENABLE_FADE) {
-				ledColor[ledNum][0] = (byte) (((((r / SAMPLE_COUNT) >> 16) & 0xFF) * FADE_INV + (ledColorOld[ledNum][0] & 0xFF) * FADE) / MAX_FADE);
-				ledColor[ledNum][1] = (byte) (((((g / SAMPLE_COUNT) >>  8) & 0xFF) * FADE_INV + (ledColorOld[ledNum][1] & 0xFF) * FADE) / MAX_FADE);
-				ledColor[ledNum][2] = (byte) (((((b / SAMPLE_COUNT)      ) & 0xFF) * FADE_INV + (ledColorOld[ledNum][2] & 0xFF) * FADE) / MAX_FADE);
+				ledColor[ledNum].setR(((((r / SAMPLE_COUNT) >> 16) & 0xFF) * FADE_INV + ledColorOld[ledNum].getR() * FADE) / MAX_FADE);
+				ledColor[ledNum].setG(((((g / SAMPLE_COUNT) >>  8) & 0xFF) * FADE_INV + ledColorOld[ledNum].getG() * FADE) / MAX_FADE);
+				ledColor[ledNum].setB(((((b / SAMPLE_COUNT)      ) & 0xFF) * FADE_INV + ledColorOld[ledNum].getB() * FADE) / MAX_FADE);
 			} else {
-				ledColor[ledNum][0] = (byte) (((r / SAMPLE_COUNT) >> 16) & 0xFF);
-				ledColor[ledNum][1] = (byte) (((g / SAMPLE_COUNT) >>  8) & 0xFF);
-				ledColor[ledNum][2] = (byte) (((b / SAMPLE_COUNT)      ) & 0xFF);
+				ledColor[ledNum].setR(((r / SAMPLE_COUNT) >> 16) & 0xFF);
+				ledColor[ledNum].setG(((g / SAMPLE_COUNT) >>  8) & 0xFF);
+				ledColor[ledNum].setB(((b / SAMPLE_COUNT)      ) & 0xFF);
 			}
 		}
 

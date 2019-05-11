@@ -1,5 +1,6 @@
 package me.khol.ambilight.gui
 
+import me.khol.ambilight.LedColor
 import me.khol.ambilight.LedConfig
 
 import javax.swing.*
@@ -9,13 +10,8 @@ class PreviewPanel(private val config: LedConfig) : JPanel() {
 
 	private var colors: List<Color> = List(config.ledCount) { Color.BLACK }
 
-	fun setColors(segmentColors: Array<ByteArray>) {
-		colors = segmentColors.map { color: ByteArray ->
-			val red = ((color[0] + 256) % 256).toShort()
-			val green = ((color[1] + 256) % 256).toShort()
-			val blue = ((color[2] + 256) % 256).toShort()
-			Color(red.toInt(), green.toInt(), blue.toInt())
-		}
+	fun setColors(segmentColors: Array<LedColor>) {
+		colors = segmentColors.map { Color(it.r.toInt(), it.g.toInt(), it.b.toInt()) }
 
 		repaint()
 	}

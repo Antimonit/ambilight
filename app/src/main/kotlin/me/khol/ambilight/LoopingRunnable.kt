@@ -6,11 +6,10 @@ import kotlin.math.min
 /**
  * Created by David Khol [david@khol.me] on 20. 7. 2017.
  */
-@ExperimentalUnsignedTypes
 class LoopingRunnable(
 	config: LedConfig,
-	private val ambilight: Ambilight,
-	private val listener: (Array<ByteArray>) -> Unit
+	private val input: () -> Array<LedColor>,
+	private val output: (Array<LedColor>) -> Unit
 ) : Runnable, GUIListener {
 
 	private var renderRate: Long = 10L
@@ -39,18 +38,7 @@ class LoopingRunnable(
 	)
 
 	private var targetSegmentColors: Array<LedColor> = Array(config.ledCount) { LedColor() }
-
-	private fun retrieveColors(): Array<LedColor> {
-		return ambilight.getScreenSegmentsColors().map {
-			LedColor(it[0].toUByte().toFloat(), it[1].toUByte().toFloat(), it[2].toUByte().toFloat())
-		}.toTypedArray()
-	}
-
-	private fun sendColors(colors: Array<LedColor>) {
-		listener(colors.map {
-			byteArrayOf(it.r.toByte(), it.g.toByte(), it.b.toByte())
-		}.toTypedArray())
-	}
+	private var segmentColors: Array<LedColor> = Array(config.ledCount) { LedColor() }
 
 	override fun run(): Nothing {
 		while (true) {
@@ -80,13 +68,14 @@ class LoopingRunnable(
 	}
 
 	private fun render() {
-		targetSegmentColors = renderMods.fold(retrieveColors()) { colors, mod ->
+		targetSegmentColors = renderMods.fold(input()) { colors, mod ->
 			mod.update(colors)
 		}
+		segmentColors = targetSegmentColors.map { it.copy() }.toTypedArray()
 	}
 
 	private fun update() {
-		sendColors(updateMods.fold(targetSegmentColors) { colors, mod ->
+		output(updateMods.fold(segmentColors) { colors, mod ->
 			mod.update(colors)
 		})
 	}
